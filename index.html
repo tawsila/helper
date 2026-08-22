@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Anchor — Focus for freelancers</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<script>
+  tailwind.config = {
+    theme: {
+      extend: {
+        colors: {
+          ink: '#12213B',
+          paper: '#FAFAF7',
+          teal: '#1F7A6C',
+          indigo: '#3547E0',
+          mist: '#EDEDE6',
+        },
+        fontFamily: {
+          display: ['Fraunces', 'serif'],
+          body: ['Inter', 'sans-serif'],
+        },
+      },
+    },
+  };
+</script>
+<style>
+  html { scroll-behavior: smooth; }
+  body { font-family: 'Inter', sans-serif; background-color: #FAFAF7; color: #12213B; }
+  .font-display { font-family: 'Fraunces', serif; font-feature-settings: "ss01"; }
+  .bearing-line {
+    background-image: repeating-linear-gradient(90deg, #12213B22 0, #12213B22 1px, transparent 1px, transparent 8px);
+  }
+  input:focus, textarea:focus {
+    outline: 2px solid #3547E0;
+    outline-offset: 2px;
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .rise { animation: rise .7s cubic-bezier(.2,.7,.2,1) both; }
+  }
+  @keyframes rise { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: translateY(0); } }
+</style>
+</head>
+<body class="antialiased">
+
+<!-- Nav -->
+<header class="max-w-6xl mx-auto px-6 sm:px-10 py-6 flex items-center justify-between">
+  <div class="flex items-center gap-2">
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" class="text-ink">
+      <path d="M12 3v4M12 17v4M5 12H3M21 12h-2" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
+      <circle cx="12" cy="12" r="6" stroke="currentColor" stroke-width="1.6"/>
+      <circle cx="12" cy="12" r="1.6" fill="currentColor"/>
+    </svg>
+    <span class="font-display text-lg tracking-tight">Anchor</span>
+  </div>
+  <a href="#contact" class="text-sm font-medium border border-ink/15 rounded-full px-4 py-2 hover:bg-ink hover:text-paper transition-colors">Get in touch</a>
+</header>
+
+<!-- Hero -->
+<section class="max-w-6xl mx-auto px-6 sm:px-10 pt-10 sm:pt-16 pb-20 sm:pb-28">
+  <div class="grid md:grid-cols-12 gap-10 items-end">
+    <div class="md:col-span-8 rise">
+      <p class="uppercase text-xs tracking-[0.2em] text-teal font-semibold mb-5">One project at a time, on purpose</p>
+      <h1 class="font-display text-[2.6rem] sm:text-6xl leading-[1.05] tracking-tight text-ink">
+        Hold your course<br class="hidden sm:block"> when the work<br class="hidden sm:block"> pulls in six directions.
+      </h1>
+      <p class="mt-7 text-lg text-ink/70 max-w-xl leading-relaxed">
+        Anchor is a single-project workspace for independent consultants. No backlog to groom, no board to reorganize — just the one client, the one deadline, and what's actually next.
+      </p>
+      <div class="mt-9 flex flex-wrap items-center gap-4">
+        <a href="#contact" class="inline-flex items-center gap-2 bg-indigo text-paper font-medium px-6 py-3.5 rounded-full hover:bg-ink transition-colors">
+          Start your first project
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </a>
+        <span class="text-sm text-ink/50">Free for your first 3 clients</span>
+      </div>
+    </div>
+    <div class="md:col-span-4 rise" style="animation-delay:.15s">
+      <div class="bearing-line rounded-2xl border border-ink/10 bg-white/60 p-6">
+        <p class="text-xs uppercase tracking-widest text-ink/40 mb-4">Currently steering</p>
+        <p class="font-display text-2xl text-ink mb-1">Hallberg &amp; Rye</p>
+        <p class="text-sm text-ink/50 mb-5">Brand identity · Week 3 of 4</p>
+        <div class="h-1.5 w-full bg-ink/10 rounded-full overflow-hidden">
+          <div class="h-full bg-teal rounded-full" style="width:62%"></div>
+        </div>
+        <p class="mt-4 text-sm text-ink/70">Next: send revised logo lockups for sign-off.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Features -->
+<section class="bg-mist/60 border-y border-ink/5">
+  <div class="max-w-6xl mx-auto px-6 sm:px-10 py-20 sm:py-24">
+    <div class="max-w-xl mb-14">
+      <h2 class="font-display text-3xl sm:text-4xl text-ink tracking-tight">Built for the work of one</h2>
+      <p class="mt-4 text-ink/70 leading-relaxed">Every feature answers a question a freelancer actually asks, not a team's org chart.</p>
+    </div>
+    <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+
+      <div class="bg-white rounded-2xl p-7 border border-ink/8">
+        <svg width="26" height="26" viewBox="0 0 24 24" fill="none" class="text-indigo mb-5">
+          <path d="M4 12l6 6L20 6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        <h3 class="font-display text-xl text-ink mb-2">A true single view</h3>
+        <p class="text-sm text-ink/65 leading-relaxed">Every task, file, and note for the current client lives on one page. Switching projects clears the deck — nothing else competes for attention.</p>
+      </div>
+
+      <div class="bg-white rounded-2xl p-7 border border-ink/8">
+        <svg width="26" height="26" viewBox="0 0 24 24" fill="none" class="text-indigo mb-5">
+          <circle cx="12" cy="12" r="8" stroke="currentColor" stroke-width="1.8"/>
+          <path d="M12 8v4l3 2" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        <h3 class="font-display text-xl text-ink mb-2">Deadlines that push back</h3>
+        <p class="text-sm text-ink/65 leading-relaxed">Add a delivery date and Anchor works backward, flagging the day a task needs to start so the deadline never sneaks up on you.</p>
+      </div>
+
+      <div class="bg-white rounded-2xl p-7 border border-ink/8">
+        <svg width="26" height="26" viewBox="0 0 24 24" fill="none" class="text-indigo mb-5">
+          <path d="M4 6h16M4 12h10M4 18h13" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+        </svg>
+        <h3 class="font-display text-xl text-ink mb-2">A record worth reusing</h3>
+        <p class="text-sm text-ink/65 leading-relaxed">When a project closes, Anchor turns the timeline into a plain-language summary you can drop straight into an invoice or a case study.</p>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- Contact -->
+<section id="contact" class="max-w-6xl mx-auto px-6 sm:px-10 py-20 sm:py-28">
+  <div class="grid md:grid-cols-12 gap-12">
+    <div class="md:col-span-5">
+      <h2 class="font-display text-3xl sm:text-4xl text-ink tracking-tight">Tell us about your work</h2>
+      <p class="mt-4 text-ink/70 leading-relaxed max-w-sm">We reply within a day, from a person who's used Anchor on real client work — not a support queue.</p>
+      <div class="mt-8 flex items-center gap-3 text-sm text-ink/50">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M4 5h16a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V6a1 1 0 0 1 1-1Z" stroke="currentColor" stroke-width="1.6"/><path d="m3.5 6 8.5 6.5L20.5 6" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+        hello@anchor.work
+      </div>
+    </div>
+
+    <form class="md:col-span-7 bg-white border border-ink/10 rounded-2xl p-7 sm:p-9">
+      <div class="grid sm:grid-cols-2 gap-5">
+        <div>
+          <label for="name" class="block text-sm font-medium text-ink/80 mb-1.5">Name</label>
+          <input type="text" id="name" name="name" placeholder="Jordan Lee"
+            class="w-full rounded-lg border border-ink/15 px-4 py-2.5 text-sm placeholder:text-ink/30 focus:border-indigo">
+        </div>
+        <div>
+          <label for="email" class="block text-sm font-medium text-ink/80 mb-1.5">Email</label>
+          <input type="email" id="email" name="email" placeholder="jordan@studio.com"
+            class="w-full rounded-lg border border-ink/15 px-4 py-2.5 text-sm placeholder:text-ink/30 focus:border-indigo">
+        </div>
+      </div>
+      <div class="mt-5">
+        <label for="role" class="block text-sm font-medium text-ink/80 mb-1.5">What kind of work do you do?</label>
+        <input type="text" id="role" name="role" placeholder="Brand design, copywriting, dev consulting…"
+          class="w-full rounded-lg border border-ink/15 px-4 py-2.5 text-sm placeholder:text-ink/30 focus:border-indigo">
+      </div>
+      <div class="mt-5">
+        <label for="message" class="block text-sm font-medium text-ink/80 mb-1.5">Message</label>
+        <textarea id="message" name="message" rows="4" placeholder="What's slowing you down right now?"
+          class="w-full rounded-lg border border-ink/15 px-4 py-2.5 text-sm placeholder:text-ink/30 focus:border-indigo resize-none"></textarea>
+      </div>
+      <button type="submit"
+        class="mt-6 inline-flex items-center gap-2 bg-ink text-paper font-medium px-6 py-3 rounded-full hover:bg-indigo transition-colors">
+        Send message
+      </button>
+    </form>
+  </div>
+</section>
+
+<footer class="border-t border-ink/8">
+  <div class="max-w-6xl mx-auto px-6 sm:px-10 py-8 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-ink/40">
+    <span>© 2026 Anchor. Made for a workday of one.</span>
+    <span>Freelance operations software</span>
+  </div>
+</footer>
+
+</body>
+</html>
