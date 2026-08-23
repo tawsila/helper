@@ -204,5 +204,135 @@
   </div>
 </footer>
 
+<!-- زر فتح المساعد الذكي -->
+<button id="chatToggle" aria-label="افتح المساعد الذكي"
+  class="fixed bottom-6 left-6 z-40 w-14 h-14 rounded-full bg-indigo text-paper shadow-lg shadow-ink/20 flex items-center justify-center hover:bg-ink transition-colors">
+  <svg id="chatToggleIcon" width="24" height="24" viewBox="0 0 24 24" fill="none">
+    <path d="M4 4h16v12H8l-4 4V4Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/>
+  </svg>
+</button>
+
+<!-- لوحة المحادثة -->
+<div id="chatPanel"
+  class="fixed bottom-24 left-6 z-40 w-[22rem] max-w-[calc(100vw-3rem)] h-[28rem] max-h-[70vh] bg-paper border border-ink/12 rounded-2xl shadow-2xl shadow-ink/20 flex-col overflow-hidden hidden">
+  <div class="bg-ink text-paper px-5 py-4 flex items-center justify-between">
+    <div>
+      <p class="font-display font-bold text-sm">مساعد المشروع</p>
+      <p class="text-xs text-paper/60">بتقنية شات جي بي تي</p>
+    </div>
+    <button id="chatClose" aria-label="إغلاق" class="text-paper/70 hover:text-paper">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M6 6l12 12M18 6 6 18" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg>
+    </button>
+  </div>
+  <div id="chatMessages" class="flex-1 overflow-y-auto px-4 py-4 space-y-3 bg-mist/30">
+    <div class="max-w-[85%] mr-auto bg-white border border-ink/8 rounded-2xl rounded-tr-sm px-4 py-2.5 text-sm text-ink/80 leading-relaxed">
+      مرحبًا! أنا مساعدك في مشروع «شركة هلبرغ للتصميم». اسألني عن أي شيء يخص سير عملك الحالي.
+    </div>
+  </div>
+  <form id="chatForm" class="flex items-center gap-2 border-t border-ink/10 bg-white px-3 py-3">
+    <input id="chatInput" type="text" placeholder="اكتب سؤالك…" autocomplete="off"
+      class="flex-1 rounded-full border border-ink/15 px-4 py-2 text-sm placeholder:text-ink/30 focus:border-indigo">
+    <button id="chatSend" type="submit" aria-label="إرسال"
+      class="w-9 h-9 shrink-0 rounded-full bg-indigo text-paper flex items-center justify-center hover:bg-ink transition-colors disabled:opacity-50 disabled:cursor-not-allowed">
+      <svg width="16" height="16" viewBox="0 0 16 16" fill="none" class="scale-x-[-1]"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </button>
+  </form>
+</div>
+
+<script>
+  (function () {
+    const toggleBtn = document.getElementById('chatToggle');
+    const toggleIcon = document.getElementById('chatToggleIcon');
+    const panel = document.getElementById('chatPanel');
+    const closeBtn = document.getElementById('chatClose');
+    const form = document.getElementById('chatForm');
+    const input = document.getElementById('chatInput');
+    const sendBtn = document.getElementById('chatSend');
+    const messages = document.getElementById('chatMessages');
+
+    const history = [];
+    let open = false;
+
+    function setOpen(v) {
+      open = v;
+      panel.classList.toggle('hidden', !open);
+      panel.classList.toggle('flex', open);
+      toggleIcon.innerHTML = open
+        ? '<path d="M6 6l12 12M18 6 6 18" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>'
+        : '<path d="M4 4h16v12H8l-4 4V4Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/>';
+      if (open) input.focus();
+    }
+
+    toggleBtn.addEventListener('click', () => setOpen(!open));
+    closeBtn.addEventListener('click', () => setOpen(false));
+
+    function addBubble(text, sender) {
+      const div = document.createElement('div');
+      const base = 'max-w-[85%] rounded-2xl px-4 py-2.5 text-sm leading-relaxed';
+      if (sender === 'user') {
+        div.className = base + ' ml-auto bg-indigo text-paper rounded-tl-sm';
+      } else {
+        div.className = base + ' mr-auto bg-white border border-ink/8 text-ink/80 rounded-tr-sm';
+      }
+      div.textContent = text;
+      messages.appendChild(div);
+      messages.scrollTop = messages.scrollHeight;
+      return div;
+    }
+
+    async function handleSubmit(e) {
+      e.preventDefault();
+      const text = input.value.trim();
+      if (!text) return;
+
+      addBubble(text, 'user');
+      history.push({ role: 'user', content: text });
+      input.value = '';
+      input.disabled = true;
+      sendBtn.disabled = true;
+
+      const loading = addBubble('...جارٍ الكتابة', 'bot');
+      loading.classList.add('opacity-60', 'italic');
+
+      try {
+        const response = await fetch('https://api.anthropic.com/v1/messages', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            model: 'claude-sonnet-4-6',
+            max_tokens: 1000,
+            system: 'أنت "مساعد المشروع"، مساعد ذكي داخل تطبيق "المساعد" — أداة إدارة مشروع واحد للمستقلين وأصحاب الأعمال الحرة. ساعد المستخدم بإيجاز ووضوح فيما يخص تنظيم عمله، مواعيده النهائية، وتواصله مع عملائه. أجب دائمًا باللغة العربية بأسلوب مباشر وودود.',
+            messages: history
+          })
+        });
+
+        if (!response.ok) throw new Error('HTTP ' + response.status);
+
+        const data = await response.json();
+        const reply = (data.content || [])
+          .filter(b => b.type === 'text')
+          .map(b => b.text)
+          .join('\n')
+          .trim() || 'لم أتلقَّ ردًا نصيًا.';
+
+        loading.textContent = reply;
+        loading.classList.remove('opacity-60', 'italic');
+        history.push({ role: 'assistant', content: reply });
+      } catch (err) {
+        loading.textContent = 'تعذّر الاتصال بالمساعد الذكي. حاول مرة أخرى.';
+        loading.classList.remove('opacity-60', 'italic');
+        loading.classList.add('bg-red-50', 'border-red-200', 'text-red-700');
+        console.error('Claude API error:', err);
+      } finally {
+        input.disabled = false;
+        sendBtn.disabled = false;
+        input.focus();
+      }
+    }
+
+    form.addEventListener('submit', handleSubmit);
+  })();
+</script>
+
 </body>
 </html>
