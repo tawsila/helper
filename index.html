@@ -1,376 +1,582 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>المساعد — التركيز لأصحاب الأعمال الحرة</title>
-<script src="https://cdn.tailwindcss.com"></script>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-<script>
-  tailwind.config = {
-    theme: {
-      extend: {
-        colors: {
-          ink: '#12213B',
-          paper: '#FAFAF7',
-          teal: '#1F7A6C',
-          indigo: '#3547E0',
-          mist: '#EDEDE6',
-        },
-        fontFamily: {
-          display: ['Cairo', 'sans-serif'],
-          body: ['Cairo', 'sans-serif'],
-        },
-      },
-    },
-  };
-</script>
-<style>
-  html { scroll-behavior: smooth; }
-  body { font-family: 'Cairo', sans-serif; background-color: #FAFAF7; color: #12213B; }
-  .bearing-line {
-    background-image: repeating-linear-gradient(90deg, #12213B22 0, #12213B22 1px, transparent 1px, transparent 8px);
-  }
-  input:focus, textarea:focus {
-    outline: 2px solid #3547E0;
-    outline-offset: 2px;
-  }
-  @media (prefers-reduced-motion: no-preference) {
-    .rise { animation: rise .7s cubic-bezier(.2,.7,.2,1) both; }
-  }
-  @keyframes rise { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: translateY(0); } }
-</style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>منصة بقالتي | www.bkalati.com</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=El+Messiri:wght@500;600;700&family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      /* ---- Color tokens: Qatari maroon + warm sand, not the default SaaS teal ---- */
+      --bg: #FBF8F4;
+      --surface: #FFFFFF;
+      --surface-alt: #F5EFE7;
+      --maroon: #7A1636;
+      --maroon-dark: #5A0F27;
+      --maroon-tint: #FBEAEF;
+      --sage: #4B7A5D;
+      --sage-tint: #E9F1EC;
+      --gold: #C9A15A;
+      --gold-tint: #FBF3E3;
+      --ink: #241C1F;
+      --ink-soft: #6B5F5A;
+      --ink-faint: #A79C95;
+      --line: #ECE4DA;
+      --shadow-sm: 0 2px 8px rgba(36,28,31,0.06);
+      --shadow-md: 0 8px 24px rgba(36,28,31,0.10);
+      --shadow-lg: 0 16px 40px rgba(36,28,31,0.16);
+      --radius-lg: 22px;
+      --radius-md: 16px;
+      --radius-sm: 10px;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html { -webkit-tap-highlight-color: transparent; }
+    body {
+      font-family: 'Tajawal', system-ui, sans-serif;
+      background: var(--bg);
+      color: var(--ink);
+      padding-bottom: 128px;
+      -webkit-font-smoothing: antialiased;
+    }
+    h1, h2, h3, .display { font-family: 'El Messiri', 'Tajawal', sans-serif; }
+
+    /* Phone-frame illusion for a native-app feel */
+    .app-shell { max-width: 460px; margin: 0 auto; min-height: 100vh; background: var(--bg); position: relative; box-shadow: var(--shadow-lg); overflow: hidden; }
+    @media (min-width: 461px) {
+      body { background: #EFE7DC; padding-top: 24px; padding-bottom: 24px; }
+      .app-shell { border-radius: 32px; min-height: calc(100vh - 48px); }
+    }
+
+    /* ---------------- Header ---------------- */
+    header {
+      position: relative;
+      background: linear-gradient(160deg, var(--maroon) 0%, var(--maroon-dark) 100%);
+      color: white;
+      padding: 18px 20px 22px;
+      overflow: hidden;
+      border-radius: 0 0 26px 26px;
+    }
+    header::before {
+      /* Sadu-inspired geometric weave, subtle, low-opacity — the signature motif */
+      content: '';
+      position: absolute; inset: 0;
+      background-image: repeating-linear-gradient(45deg, rgba(255,255,255,0.05) 0 2px, transparent 2px 18px),
+                         repeating-linear-gradient(-45deg, rgba(255,255,255,0.05) 0 2px, transparent 2px 18px);
+      pointer-events: none;
+    }
+    .header-top { position: relative; display: flex; justify-content: space-between; align-items: flex-start; }
+    .logo-container { display: flex; flex-direction: column; gap: 2px; }
+    .logo { font-size: 21px; font-weight: 700; text-decoration: none; color: white; letter-spacing: 0.2px; }
+    .domain { font-size: 10.5px; opacity: 0.75; direction: ltr; font-weight: 500; text-align: right; font-family: 'Tajawal', sans-serif; }
+
+    .role-switcher { display: flex; gap: 4px; background: rgba(255,255,255,0.14); padding: 4px; border-radius: 30px; backdrop-filter: blur(4px); }
+    .role-btn { border: none; background: transparent; color: rgba(255,255,255,0.85); padding: 7px 14px; border-radius: 24px; cursor: pointer; font-size: 12.5px; font-weight: 700; font-family: 'Tajawal', sans-serif; position: relative; transition: all 0.25s ease; }
+    .role-btn.active { background: white; color: var(--maroon); }
+    .order-badge { position: absolute; top: -5px; left: -5px; background: var(--gold); color: var(--maroon-dark); font-size: 10px; font-weight: 800; min-width: 17px; height: 17px; border-radius: 9px; display: flex; align-items: center; justify-content: center; padding: 0 3px; box-shadow: 0 2px 4px rgba(0,0,0,0.2); }
+
+    .container { max-width: 460px; margin: 0 auto; padding: 0 16px; }
+
+    /* ---------------- Store Card ---------------- */
+    .store-card {
+      background: var(--surface);
+      padding: 16px 18px;
+      border-radius: var(--radius-lg);
+      margin-top: -16px;
+      margin-bottom: 16px;
+      position: relative;
+      box-shadow: var(--shadow-md);
+      display: flex; justify-content: space-between; align-items: center;
+    }
+    .store-card h3 { font-size: 16.5px; font-weight: 600; margin-bottom: 4px; }
+    .store-meta { display: flex; align-items: center; gap: 6px; font-size: 12px; color: var(--ink-soft); font-weight: 500; }
+    .live-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--sage); position: relative; display: inline-block; }
+    .live-dot::after { content: ''; position: absolute; inset: 0; border-radius: 50%; background: var(--sage); animation: pulse 1.8s ease-out infinite; }
+    @keyframes pulse { 0% { transform: scale(1); opacity: 0.7; } 100% { transform: scale(2.6); opacity: 0; } }
+    .open-pill { background: var(--sage-tint); color: var(--sage); padding: 5px 12px; border-radius: 20px; font-size: 11.5px; font-weight: 700; white-space: nowrap; }
+
+    /* ---------------- Support Bar ---------------- */
+    .support-bar { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius-md); padding: 12px 16px; margin-bottom: 16px; display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 10px; font-size: 12px; box-shadow: var(--shadow-sm); }
+    .support-item { display: flex; align-items: center; gap: 6px; color: var(--ink-soft); font-weight: 500; }
+    .support-item a { color: var(--maroon); text-decoration: none; font-weight: 700; }
+    .phone-num { direction: ltr; unicode-bidi: embed; display: inline-block; }
+
+    /* ---------------- Suggestions ---------------- */
+    .suggestions { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 4px; margin-bottom: 18px; scrollbar-width: none; }
+    .suggestions::-webkit-scrollbar { display: none; }
+    .sug-btn { background: var(--gold-tint); color: #8A6A2E; border: 1px solid rgba(201,161,90,0.35); padding: 8px 14px; border-radius: 20px; font-size: 12px; white-space: nowrap; cursor: pointer; font-weight: 700; font-family: 'Tajawal', sans-serif; transition: transform 0.15s ease, background 0.2s ease; }
+    .sug-btn:active { transform: scale(0.96); background: #F5E7C8; }
+
+    .section-title { font-size: 15px; font-weight: 700; margin-bottom: 12px; display: flex; align-items: center; justify-content: space-between; }
+    .section-title span.count { font-size: 11.5px; color: var(--ink-faint); font-weight: 500; }
+
+    /* ---------------- Products Grid ---------------- */
+    .products-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px; }
+    .product-card {
+      background: var(--surface);
+      border-radius: var(--radius-md);
+      overflow: hidden;
+      border: 1px solid var(--line);
+      box-shadow: var(--shadow-sm);
+      transition: box-shadow 0.25s ease, transform 0.25s ease;
+    }
+    .product-card:hover { box-shadow: var(--shadow-md); transform: translateY(-2px); }
+    .product-img-wrap { position: relative; width: 100%; aspect-ratio: 1 / 1; background: var(--surface-alt); overflow: hidden; }
+    .product-img-wrap img { width: 100%; height: 100%; object-fit: cover; display: block; transition: transform 0.4s ease; }
+    .product-card:hover .product-img-wrap img { transform: scale(1.06); }
+    .product-body { padding: 10px 12px 12px; }
+    .product-title { font-weight: 700; font-size: 13.5px; margin-bottom: 2px; line-height: 1.3; }
+    .product-unit { font-size: 11px; color: var(--ink-faint); margin-bottom: 8px; }
+    .product-row { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+    .product-price { color: var(--maroon); font-weight: 800; font-size: 14px; }
+    .add-btn {
+      background: var(--maroon);
+      color: white; border: none; width: 32px; height: 32px; border-radius: 10px;
+      cursor: pointer; font-weight: 800; font-size: 17px; line-height: 1;
+      display: flex; align-items: center; justify-content: center;
+      transition: background 0.2s ease, transform 0.15s ease;
+    }
+    .add-btn:active { transform: scale(0.9); }
+    .add-btn.in-cart { background: var(--sage); }
+    .qty-pill { background: var(--maroon-tint); color: var(--maroon); font-weight: 800; font-size: 12px; border-radius: 10px; padding: 6px 10px; min-width: 32px; text-align: center; }
+
+    /* ---------------- Cart Bar (floating inset pill) ---------------- */
+    .cart-bar {
+      position: fixed; bottom: 16px; left: 50%; transform: translateX(-50%);
+      width: calc(100% - 32px); max-width: 428px;
+      background: var(--surface);
+      border-radius: 20px;
+      padding: 12px 12px 12px 18px;
+      display: flex; justify-content: space-between; align-items: center;
+      box-shadow: var(--shadow-lg);
+      z-index: 40;
+      border: 1px solid var(--line);
+    }
+    .cart-info { display: flex; flex-direction: column; }
+    .cart-label { font-size: 10.5px; color: var(--ink-faint); font-weight: 600; }
+    .cart-total-val { font-weight: 800; font-size: 16px; }
+    .checkout-btn {
+      background: var(--maroon); color: white; border: none; padding: 12px 22px; border-radius: 14px;
+      font-weight: 700; font-size: 13.5px; cursor: pointer; font-family: 'Tajawal', sans-serif;
+      transition: background 0.2s ease, transform 0.15s ease;
+    }
+    .checkout-btn:active { transform: scale(0.96); }
+    .checkout-btn:disabled { background: #DCD3C8; color: #A79C95; cursor: not-allowed; }
+
+    /* ---------------- Toast ---------------- */
+    .toast {
+      position: fixed; bottom: 96px; left: 50%; transform: translateX(-50%) translateY(16px);
+      background: var(--ink); color: white; padding: 11px 20px; border-radius: 30px;
+      font-size: 12.5px; font-weight: 600; opacity: 0; pointer-events: none;
+      transition: all 0.3s cubic-bezier(.2,.8,.2,1); z-index: 200; white-space: nowrap; max-width: 90%;
+      overflow: hidden; text-overflow: ellipsis;
+    }
+    .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+    /* ---------------- Floating Action Stack (fixed, no overlap) ---------------- */
+    .fab-stack {
+      position: fixed; bottom: 96px; left: 16px; z-index: 45;
+      display: flex; flex-direction: column-reverse; gap: 12px; align-items: flex-start;
+    }
+    .fab {
+      display: flex; align-items: center; gap: 8px;
+      border: none; cursor: pointer; border-radius: 30px;
+      box-shadow: var(--shadow-md); font-family: 'Tajawal', sans-serif;
+      height: 46px; padding: 0 16px 0 0; font-size: 12.5px; font-weight: 700;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+    .fab:active { transform: scale(0.95); }
+    .fab-icon { width: 46px; height: 46px; min-width: 46px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 19px; margin-left: -16px; box-shadow: 0 2px 6px rgba(0,0,0,0.15); }
+    .fab-wa { background: white; color: #128C4A; }
+    .fab-wa .fab-icon { background: #25D366; color: white; }
+    .fab-gemini { background: white; color: var(--maroon); }
+    .fab-gemini .fab-icon { background: linear-gradient(135deg, #4f46e5, #9333ea); color: white; }
+
+    /* ---------------- Chat ---------------- */
+    .chat-window {
+      display: none; position: fixed; bottom: 96px; left: 16px;
+      width: min(340px, calc(100% - 32px)); height: 440px;
+      background: var(--surface); border-radius: 20px; box-shadow: var(--shadow-lg);
+      flex-direction: column; z-index: 100; overflow: hidden; border: 1px solid var(--line);
+    }
+    .chat-header { background: linear-gradient(135deg, #4f46e5, #9333ea); color: white; padding: 14px 16px; display: flex; justify-content: space-between; align-items: center; font-size: 13.5px; font-weight: 700; }
+    .chat-messages { flex: 1; padding: 12px; overflow-y: auto; display: flex; flex-direction: column; gap: 8px; background: var(--bg); font-size: 13px; }
+    .chat-msg { padding: 9px 13px; border-radius: 14px; max-width: 85%; line-height: 1.5; }
+    .chat-msg.user { align-self: flex-end; background: var(--maroon); color: white; border-bottom-left-radius: 4px; }
+    .chat-msg.bot { align-self: flex-start; background: white; color: var(--ink); border: 1px solid var(--line); border-bottom-right-radius: 4px; }
+    .chat-input-area { display: flex; padding: 10px; background: white; border-top: 1px solid var(--line); gap: 6px; }
+    .chat-input-area input { flex: 1; padding: 9px 12px; border: 1px solid var(--line); border-radius: 10px; outline: none; font-size: 12.5px; font-family: 'Tajawal', sans-serif; background: var(--bg); }
+    .chat-input-area button { background: var(--maroon); color: white; border: none; padding: 0 14px; border-radius: 10px; cursor: pointer; font-weight: 700; font-size: 12.5px; font-family: 'Tajawal', sans-serif; }
+    .contact-badge { display: inline-block; margin-top: 8px; padding: 6px 10px; border-radius: 8px; font-size: 11px; font-weight: 700; text-decoration: none; }
+    .wa-badge { background-color: #25d366; color: white; }
+    .email-badge { background-color: var(--maroon); color: white; margin-right: 4px; }
+
+    /* ---------------- Merchant Orders ---------------- */
+    .empty-state { background: var(--surface); padding: 40px 18px; border-radius: var(--radius-lg); text-align: center; color: var(--ink-faint); font-size: 13px; border: 1px dashed var(--line); }
+    .order-card { background: var(--surface); padding: 16px; border-radius: var(--radius-md); border: 1px solid var(--line); border-right: 4px solid var(--maroon); margin-bottom: 12px; box-shadow: var(--shadow-sm); }
+    .order-card.new { animation: pop 0.4s ease; }
+    @keyframes pop { 0% { transform: scale(0.96); opacity: 0.4; } 100% { transform: scale(1); opacity: 1; } }
+    .order-top { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 6px; }
+    .order-id { font-weight: 700; font-size: 14px; }
+    .order-time { font-size: 11px; color: var(--ink-faint); }
+    .order-items { font-size: 13px; color: var(--ink-soft); margin: 6px 0; line-height: 1.5; }
+    .order-total { font-size: 12.5px; color: var(--maroon); font-weight: 800; margin-bottom: 10px; }
+    .order-status-row { display: flex; align-items: center; justify-content: space-between; gap: 8px; flex-wrap: wrap; }
+    .status-pill { font-size: 11px; font-weight: 700; padding: 4px 12px; border-radius: 20px; }
+    .status-select { font-size: 12px; padding: 6px 10px; border-radius: 10px; border: 1px solid var(--line); background: var(--bg); font-family: 'Tajawal', sans-serif; }
+
+    .hidden { display: none !important; }
+  </style>
 </head>
-<body class="antialiased">
+<body>
+<div class="app-shell">
 
-<!-- شريط التنقل -->
-<header class="max-w-6xl mx-auto px-6 sm:px-10 py-6 flex items-center justify-between">
-  <div class="flex items-center gap-2">
-    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" class="text-ink">
-      <path d="M12 3v4M12 17v4M5 12H3M21 12h-2" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
-      <circle cx="12" cy="12" r="6" stroke="currentColor" stroke-width="1.6"/>
-      <circle cx="12" cy="12" r="1.6" fill="currentColor"/>
-    </svg>
-    <span class="font-display font-bold text-lg tracking-tight">المساعد</span>
-  </div>
-  <a href="#contact" class="text-sm font-medium border border-ink/15 rounded-full px-4 py-2 hover:bg-ink hover:text-paper transition-colors">تواصل معنا</a>
-</header>
-
-<!-- القسم الرئيسي -->
-<section class="max-w-6xl mx-auto px-6 sm:px-10 pt-10 sm:pt-16 pb-20 sm:pb-28">
-  <div class="grid md:grid-cols-12 gap-10 items-end">
-    <div class="md:col-span-8 rise">
-      <p class="uppercase text-xs tracking-[0.2em] text-teal font-bold mb-5">مشروع واحد، بتركيز كامل</p>
-      <h1 class="font-display font-extrabold text-[2.4rem] sm:text-6xl leading-[1.15] tracking-tight text-ink">
-        حافظ على مسارك<br class="hidden sm:block">
-        حين يتوزع عملك<br class="hidden sm:block">
-        على ستة اتجاهات
-      </h1>
-      <p class="mt-7 text-lg text-ink/70 max-w-xl leading-relaxed">
-        المساعد مساحة عمل مخصصة لمشروع واحد، مصممة للمستقلين والاستشاريين. بلا قائمة مهام متضخمة ولا لوحة معقدة — فقط العميل الحالي، الموعد النهائي، والخطوة التالية.
-      </p>
-      <div class="mt-5 inline-flex items-center gap-2 bg-white border border-ink/10 rounded-full px-4 py-2 text-sm text-ink/70">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" class="text-teal shrink-0">
-          <path d="M12 2 2 7l10 5 10-5-10-5Z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/>
-          <path d="M2 17l10 5 10-5M2 12l10 5 10-5" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/>
-        </svg>
-        مدعوم بتقنية شات جي بي تي للمساعدة الذكية داخل مشروعك
+  <header>
+    <div class="header-top">
+      <div class="logo-container">
+        <a href="https://www.bkalati.com" class="logo display">🛒 بقالتي</a>
+        <span class="domain">www.bkalati.com</span>
       </div>
-      <div class="mt-9 flex flex-wrap items-center gap-4">
-        <a href="#contact" class="inline-flex items-center gap-2 bg-indigo text-paper font-semibold px-6 py-3.5 rounded-full hover:bg-ink transition-colors">
-          ابدأ مشروعك الأول
-          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" class="scale-x-[-1]"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
-        </a>
-        <span class="text-sm text-ink/50">مجاني حتى ثلاثة عملاء</span>
+      <div class="role-switcher">
+        <button class="role-btn active" id="btn-cust" onclick="switchRole('customer')">واجهة الزبون</button>
+        <button class="role-btn" id="btn-merch" onclick="switchRole('merchant')">
+          واجهة البقال
+          <span class="order-badge hidden" id="orderBadge">0</span>
+        </button>
       </div>
     </div>
-    <div class="md:col-span-4 rise" style="animation-delay:.15s">
-      <div class="bearing-line rounded-2xl border border-ink/10 bg-white/60 p-6">
-        <p class="text-xs uppercase tracking-widest text-ink/40 mb-4">المشروع الحالي</p>
-        <p class="font-display font-bold text-2xl text-ink mb-1">شركة هلبرغ للتصميم</p>
-        <p class="text-sm text-ink/50 mb-5">هوية بصرية · الأسبوع الثالث من أربعة</p>
-        <div class="h-1.5 w-full bg-ink/10 rounded-full overflow-hidden">
-          <div class="h-full bg-teal rounded-full" style="width:62%"></div>
-        </div>
-        <p class="mt-4 text-sm text-ink/70">التالي: إرسال نسخ الشعار المعدّلة للاعتماد.</p>
-      </div>
-    </div>
-  </div>
-</section>
+  </header>
 
-<!-- المزايا -->
-<section class="bg-mist/60 border-y border-ink/5">
-  <div class="max-w-6xl mx-auto px-6 sm:px-10 py-20 sm:py-24">
-    <div class="max-w-xl mb-14">
-      <h2 class="font-display font-extrabold text-3xl sm:text-4xl text-ink tracking-tight">مصمم لعمل الفرد الواحد</h2>
-      <p class="mt-4 text-ink/70 leading-relaxed">كل ميزة تجيب عن سؤال يطرحه المستقل فعلًا، لا عن هيكل فريق كامل.</p>
-    </div>
-    <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
-
-      <div class="bg-white rounded-2xl p-7 border border-ink/8">
-        <svg width="26" height="26" viewBox="0 0 24 24" fill="none" class="text-indigo mb-5">
-          <path d="M4 12l6 6L20 6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
-        </svg>
-        <h3 class="font-display font-bold text-xl text-ink mb-2">واجهة واحدة موحّدة</h3>
-        <p class="text-sm text-ink/65 leading-relaxed">كل مهمة وملف وملاحظة خاصة بالعميل الحالي في صفحة واحدة. عند التبديل بين المشاريع تُمسح الشاشة تمامًا، فلا شيء يشتت انتباهك.</p>
-      </div>
-
-      <div class="bg-white rounded-2xl p-7 border border-ink/8">
-        <svg width="26" height="26" viewBox="0 0 24 24" fill="none" class="text-indigo mb-5">
-          <circle cx="12" cy="12" r="8" stroke="currentColor" stroke-width="1.8"/>
-          <path d="M12 8v4l3 2" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
-        </svg>
-        <h3 class="font-display font-bold text-xl text-ink mb-2">مواعيد نهائية تُنبّهك مبكرًا</h3>
-        <p class="text-sm text-ink/65 leading-relaxed">أضف تاريخ التسليم، ويحسب المساعد تلقائيًا اليوم الذي يجب أن تبدأ فيه كل مهمة، حتى لا يفاجئك الموعد النهائي أبدًا.</p>
-      </div>
-
-      <div class="bg-white rounded-2xl p-7 border border-ink/8">
-        <svg width="26" height="26" viewBox="0 0 24 24" fill="none" class="text-indigo mb-5">
-          <path d="M4 6h16M4 12h10M4 18h13" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
-        </svg>
-        <h3 class="font-display font-bold text-xl text-ink mb-2">سجل تستفيد منه لاحقًا</h3>
-        <p class="text-sm text-ink/65 leading-relaxed">عند إغلاق المشروع، يحوّل المساعد الجدول الزمني إلى ملخص واضح يمكنك إضافته مباشرة إلى الفاتورة أو دراسة الحالة.</p>
-      </div>
-
-      <div class="bg-white rounded-2xl p-7 border border-ink/8">
-        <svg width="26" height="26" viewBox="0 0 24 24" fill="none" class="text-indigo mb-5">
-          <path d="M12 3v3M12 18v3M4.2 4.2l2.1 2.1M17.7 17.7l2.1 2.1M3 12h3M18 12h3M4.2 19.8l2.1-2.1M17.7 6.3l2.1-2.1" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
-          <circle cx="12" cy="12" r="3.2" stroke="currentColor" stroke-width="1.8"/>
-        </svg>
-        <h3 class="font-display font-bold text-xl text-ink mb-2">مساعد ذكي بتقنية شات جي بي تي</h3>
-        <p class="text-sm text-ink/65 leading-relaxed">اطرح سؤالك على مساعد المشروع مباشرة — يلخّص المستجدات، يقترح الخطوة التالية، ويصيغ ردود العملاء بالنيابة عنك، كل ذلك داخل نفس الشاشة.</p>
-      </div>
-
-    </div>
-  </div>
-</section>
-
-<!-- التواصل -->
-<section id="contact" class="max-w-6xl mx-auto px-6 sm:px-10 py-20 sm:py-28">
-  <div class="grid md:grid-cols-12 gap-12">
-    <div class="md:col-span-5">
-      <h2 class="font-display font-extrabold text-3xl sm:text-4xl text-ink tracking-tight">حدّثنا عن طبيعة عملك</h2>
-      <p class="mt-4 text-ink/70 leading-relaxed max-w-sm">نرد خلال يوم واحد، ومن شخص استخدم المساعد فعليًا في عمل حقيقي مع عملاء — لا من فريق دعم آلي.</p>
-      <div class="mt-8 space-y-3 text-sm text-ink/60">
-        <a href="mailto:habibyous@gmail.com" class="flex items-center gap-3 hover:text-indigo transition-colors">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" class="shrink-0"><path d="M4 5h16a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V6a1 1 0 0 1 1-1Z" stroke="currentColor" stroke-width="1.6"/><path d="m3.5 6 8.5 6.5L20.5 6" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
-          <span dir="ltr">habibyous@gmail.com</span>
-        </a>
-        <a href="https://wa.me/97459978290" target="_blank" rel="noopener" class="flex items-center gap-3 hover:text-teal transition-colors">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" class="shrink-0">
-            <path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.75.46 3.44 1.32 4.94L2 22l5.29-1.38a9.9 9.9 0 0 0 4.75 1.21h.01c5.46 0 9.9-4.45 9.9-9.91C21.96 6.45 17.5 2 12.04 2Zm5.8 14.05c-.24.68-1.4 1.3-1.93 1.38-.49.08-1.11.11-1.79-.11-.41-.13-.94-.3-1.62-.6-2.86-1.24-4.72-4.12-4.86-4.31-.14-.19-1.16-1.54-1.16-2.94s.72-2.08.98-2.37c.24-.27.55-.34.73-.34h.53c.17 0 .4-.03.63.48.24.55.8 1.9.87 2.03.07.14.11.3.02.48-.09.19-.14.3-.27.46-.14.16-.29.36-.41.48-.14.14-.28.29-.12.57.16.27.71 1.17 1.53 1.9 1.05.94 1.94 1.23 2.21 1.37.27.14.43.11.59-.07.16-.19.68-.79.86-1.06.18-.27.36-.22.6-.13.24.08 1.55.73 1.82.87.27.13.44.19.51.3.07.11.07.63-.17 1.3Z"/>
-          </svg>
-          <span dir="ltr">+974 5997 8290</span>
-        </a>
-      </div>
-    </div>
-
-    <form class="md:col-span-7 bg-white border border-ink/10 rounded-2xl p-7 sm:p-9">
-      <div class="grid sm:grid-cols-2 gap-5">
-        <div>
-          <label for="name" class="block text-sm font-medium text-ink/80 mb-1.5">الاسم</label>
-          <input type="text" id="name" name="name" placeholder="سارة أحمد"
-            class="w-full rounded-lg border border-ink/15 px-4 py-2.5 text-sm placeholder:text-ink/30 focus:border-indigo">
-        </div>
-        <div>
-          <label for="email" class="block text-sm font-medium text-ink/80 mb-1.5">البريد الإلكتروني</label>
-          <input type="email" id="email" name="email" placeholder="sara@studio.com" dir="ltr"
-            class="w-full rounded-lg border border-ink/15 px-4 py-2.5 text-sm text-right placeholder:text-ink/30 focus:border-indigo">
+  <div class="container">
+    <!-- Store Info -->
+    <div class="store-card">
+      <div>
+        <h3 class="display">بقالة الحي (البركة) 🏪</h3>
+        <div class="store-meta">
+          <span class="live-dot"></span>
+          <span>التوصيل خلال 10 دقائق · قطر</span>
         </div>
       </div>
-      <div class="mt-5">
-        <label for="role" class="block text-sm font-medium text-ink/80 mb-1.5">ما طبيعة عملك؟</label>
-        <input type="text" id="role" name="role" placeholder="تصميم هوية، كتابة محتوى، استشارات تقنية…"
-          class="w-full rounded-lg border border-ink/15 px-4 py-2.5 text-sm placeholder:text-ink/30 focus:border-indigo">
-      </div>
-      <div class="mt-5">
-        <label for="message" class="block text-sm font-medium text-ink/80 mb-1.5">رسالتك</label>
-        <textarea id="message" name="message" rows="4" placeholder="ما الذي يعطّل سير عملك حاليًا؟"
-          class="w-full rounded-lg border border-ink/15 px-4 py-2.5 text-sm placeholder:text-ink/30 focus:border-indigo resize-none"></textarea>
-      </div>
-      <button type="submit"
-        class="mt-6 inline-flex items-center gap-2 bg-ink text-paper font-semibold px-6 py-3 rounded-full hover:bg-indigo transition-colors">
-        إرسال الرسالة
-      </button>
-    </form>
-  </div>
-</section>
-
-<footer class="border-t border-ink/8">
-  <div class="max-w-6xl mx-auto px-6 sm:px-10 py-8 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-ink/40">
-    <span>© 2026 المساعد. صُنع لعمل يوم واحد من نوعه.</span>
-    <span>برنامج إدارة أعمال للمستقلين</span>
-  </div>
-</footer>
-
-<!-- زر فتح المساعد الذكي -->
-<button id="chatToggle" aria-label="افتح المساعد الذكي"
-  class="fixed bottom-6 left-6 z-40 w-14 h-14 rounded-full bg-indigo text-paper shadow-lg shadow-ink/20 flex items-center justify-center hover:bg-ink transition-colors">
-  <svg id="chatToggleIcon" width="24" height="24" viewBox="0 0 24 24" fill="none">
-    <path d="M4 4h16v12H8l-4 4V4Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/>
-  </svg>
-</button>
-
-<!-- لوحة المحادثة -->
-<div id="chatPanel"
-  class="fixed bottom-24 left-6 z-40 w-[22rem] max-w-[calc(100vw-3rem)] h-[28rem] max-h-[70vh] bg-paper border border-ink/12 rounded-2xl shadow-2xl shadow-ink/20 flex-col overflow-hidden hidden">
-  <div class="bg-ink text-paper px-5 py-4 flex items-center justify-between">
-    <div>
-      <p class="font-display font-bold text-sm">مساعد المشروع</p>
-      <p class="text-xs text-paper/60">بتقنية شات جي بي تي</p>
+      <span class="open-pill">مفتوح الآن</span>
     </div>
-    <button id="chatClose" aria-label="إغلاق" class="text-paper/70 hover:text-paper">
-      <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M6 6l12 12M18 6 6 18" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg>
+
+    <!-- Quick Support Contacts Bar -->
+    <div class="support-bar">
+      <div class="support-item">
+        📱 <span class="phone-num"><a href="https://wa.me/97459978290" target="_blank">+974 5997 8290</a></span>
+      </div>
+      <div class="support-item">
+        ✉️ <a href="mailto:bkalati-help@bkalati.com">bkalati-help@bkalati.com</a>
+      </div>
+    </div>
+
+    <!-- Customer View -->
+    <div id="customer-view">
+      <div class="suggestions">
+        <button class="sug-btn" onclick="quickAsk('اقترح علي وجبة عشاء سريعة')">💡 اقتراح عشاء</button>
+        <button class="sug-btn" onclick="quickAsk('كيف أتواصل مع الدعم الفني؟')">📞 طرق التواصل</button>
+      </div>
+
+      <div class="section-title">
+        <span>منتجات مختارة</span>
+        <span class="count" id="productCount"></span>
+      </div>
+
+      <div class="products-grid" id="productsGrid"></div>
+    </div>
+
+    <!-- Merchant View -->
+    <div id="merchant-view" class="hidden">
+      <div class="section-title"><span>طلبات الزبائن 📦</span></div>
+      <div id="ordersList"></div>
+    </div>
+  </div>
+
+  <!-- Floating Action Stack: WhatsApp + Gemini, clearly spaced above the cart bar -->
+  <div class="fab-stack">
+    <button class="fab fab-gemini" onclick="toggleChat()">
+      <span class="fab-icon">✨</span> مساعد Gemini
     </button>
+    <a href="https://wa.me/97459978290?text=Hello,%20I%20need%20help%20on%20www.bkalati.com" target="_blank" class="fab fab-wa">
+      <span class="fab-icon">💬</span> واتساب مباشر
+    </a>
   </div>
-  <div id="chatMessages" class="flex-1 overflow-y-auto px-4 py-4 space-y-3 bg-mist/30">
-    <div class="max-w-[85%] mr-auto bg-white border border-ink/8 rounded-2xl rounded-tr-sm px-4 py-2.5 text-sm text-ink/80 leading-relaxed">
-      مرحبًا! أنا مساعدك في مشروع «شركة هلبرغ للتصميم». اسألني عن أي شيء يخص سير عملك الحالي.
+
+  <div class="chat-window" id="chatWin">
+    <div class="chat-header">
+      <span id="chatTitle">✨ Gemini (مساعد الزبون)</span>
+      <span style="cursor:pointer;" onclick="toggleChat()">✖</span>
+    </div>
+    <div class="chat-messages" id="chatMsgs">
+      <div class="chat-msg bot" id="welcomeMsg">
+        أهلاً بك في www.bkalati.com! أنا مساعد Gemini. يمكنني مساعدتك في طلب المشتريات أو تحويلك لفريق الدعم الفني عبر الواتساب أو الإيميل.
+      </div>
+    </div>
+    <div class="chat-input-area">
+      <input type="text" id="userInput" placeholder="اكتب سؤالك هنا..." onkeypress="if(event.key==='Enter') sendMsg()">
+      <button onclick="sendMsg()">إرسال</button>
     </div>
   </div>
-  <form id="chatForm" class="flex items-center gap-2 border-t border-ink/10 bg-white px-3 py-3">
-    <input id="chatInput" type="text" placeholder="اكتب سؤالك…" autocomplete="off"
-      class="flex-1 rounded-full border border-ink/15 px-4 py-2 text-sm placeholder:text-ink/30 focus:border-indigo">
-    <button id="chatSend" type="submit" aria-label="إرسال"
-      class="w-9 h-9 shrink-0 rounded-full bg-indigo text-paper flex items-center justify-center hover:bg-ink transition-colors disabled:opacity-50 disabled:cursor-not-allowed">
-      <svg width="16" height="16" viewBox="0 0 16 16" fill="none" class="scale-x-[-1]"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>
-    </button>
-  </form>
+
+  <!-- Cart Bar -->
+  <div class="cart-bar">
+    <div class="cart-info">
+      <span class="cart-label">الإجمالي</span>
+      <span class="cart-total-val"><span id="cartTotal">0</span> ريال</span>
+    </div>
+    <button class="checkout-btn" id="checkoutBtn" onclick="checkout()" disabled>تأكيد الطلب</button>
+  </div>
+
+  <div class="toast" id="toast"></div>
+
 </div>
 
-<script>
-  (function () {
-    const toggleBtn = document.getElementById('chatToggle');
-    const toggleIcon = document.getElementById('chatToggleIcon');
-    const panel = document.getElementById('chatPanel');
-    const closeBtn = document.getElementById('chatClose');
-    const form = document.getElementById('chatForm');
-    const input = document.getElementById('chatInput');
-    const sendBtn = document.getElementById('chatSend');
-    const messages = document.getElementById('chatMessages');
-
-    const history = [];
-    let open = false;
-
-    // ردود محلية جاهزة (Mock AI) — لا حاجة لأي اتصال خارجي أو مفتاح API
-    const MOCK_REPLIES = [
-      {
-        keywords: ['مرحبا', 'اهلا', 'أهلا', 'السلام', 'هاي', 'صباح', 'مساء'],
-        replies: [
-          'أهلًا بك! يسعدني تواجدك هنا. كيف يمكنني مساعدتك في مشروعك اليوم؟',
-          'مرحبًا! أنا مساعدك الشخصي هنا. أخبرني بما تحتاجه وسأساعدك فورًا.'
-        ]
-      },
-      {
-        keywords: ['سعر', 'تكلفة', 'باقة', 'اشتراك', 'ثمن', 'فلوس'],
-        replies: [
-          'الخدمة مجانية حتى ثلاثة عملاء، وبعدها تتوفر باقات مدفوعة حسب حجم عملك. هل تحب أن أرشدك لتفاصيل أكثر؟',
-          'يمكنك البدء مجانًا بثلاثة عملاء دون أي التزام مالي. إن احتجت باقة أكبر لاحقًا، فريقنا جاهز لمساعدتك.'
-        ]
-      },
-      {
-        keywords: ['موعد', 'تسليم', 'ديدلاين', 'deadline', 'وقت'],
-        replies: [
-          'المساعد يحسب لك تلقائيًا اليوم المناسب لبدء كل مهمة بناءً على موعد التسليم، حتى لا تفاجأ بضيق الوقت.',
-          'يمكنك إضافة تاريخ التسليم لأي مشروع، وسيقوم النظام بتنبيهك مبكرًا قبل اقتراب الموعد النهائي.'
-        ]
-      },
-      {
-        keywords: ['عميل', 'عملاء', 'زبون', 'زبائن'],
-        replies: [
-          'كل عميل له مساحة عمل مستقلة تمامًا — مهامه وملاحظاته وملفاته منفصلة تمامًا عن باقي عملائك.',
-          'يمكنك التبديل بين ملفات العملاء بسهولة، وتُمسح الشاشة تمامًا عند كل تبديل حتى لا يختلط عليك شيء.'
-        ]
-      },
-      {
-        keywords: ['تواصل', 'دعم', 'مساعدة', 'مشكلة', 'خلل'],
-        replies: [
-          'يمكنك التواصل معنا مباشرة عبر البريد الإلكتروني أو واتساب الموجودين في قسم "تواصل معنا" أعلى الصفحة، ونرد خلال يوم واحد.',
-          'إن واجهت أي مشكلة تقنية، أخبرنا عبر نموذج التواصل بأسفل الصفحة وسنعاود التواصل معك سريعًا.'
-        ]
-      },
-      {
-        keywords: ['شكرا', 'شكرًا', 'تسلم', 'يعطيك العافية'],
-        replies: [
-          'العفو! يسعدني أنني ساعدتك. لا تتردد في سؤالي عن أي شيء آخر.',
-          'أهلًا بك دائمًا، وفقك الله في مشروعك!'
-        ]
-      }
+  <script>
+    // ---------- Shared in-memory state ----------
+    // Customer and merchant views live in the same page/runtime, so a
+    // plain JS object is enough to keep them instantly in sync — no
+    // localStorage needed (it also isn't supported in this environment).
+    const PRODUCTS = [
+      { id: 'milk',   name: 'حليب طازج 1L', unit: 'المراعي', price: 6,
+        img: 'https://images.unsplash.com/photo-1576186726188-c9d70843790f?w=500&h=500&fit=crop&auto=format&q=80' },
+      { id: 'bread',  name: 'خبز طازج',      unit: 'مخبوزات يومية', price: 2,
+        img: 'https://images.unsplash.com/photo-1655662844344-ddfa82992c4d?w=500&h=500&fit=crop&auto=format&q=80' },
+      { id: 'eggs',   name: 'طبق بيض',       unit: '30 حبة', price: 18,
+        img: 'https://images.unsplash.com/photo-1650458951873-fa83dc52da70?w=500&h=500&fit=crop&auto=format&q=80' },
+      { id: 'cheese', name: 'جبنة بيضاء',    unit: 'قطعة 400 جم', price: 12,
+        img: 'https://images.unsplash.com/photo-1552767059-ce182ead6c1b?w=500&h=500&fit=crop&auto=format&q=80' },
     ];
 
-    const FALLBACK_REPLIES = [
-      'شكرًا لسؤالك. المساعد مصمم خصيصًا للمستقلين لإدارة مشروع واحد بتركيز كامل — مهامه، مواعيده، وملفات عميله في مكان واحد. هل تحب أن أشرح لك ميزة معينة؟',
-      'سؤال جيد! يمكنني مساعدتك في فهم كيفية تنظيم مشاريعك ومواعيدك النهائية عبر المساعد. أخبرني بمزيد من التفاصيل.',
-      'يمكنني توجيهك بخصوص إدارة العملاء والمواعيد داخل التطبيق. هل تقصد شيئًا محددًا؟'
-    ];
+    let currentRole = 'customer';
+    let cart = {};       // { productId: qty }
+    let orders = [];     // { id, customerName, items: [{name, qty, price}], total, status, time }
+    let orderCounter = 100;
+    let unseenOrders = 0;
 
-    function pickReply(userText) {
-      const text = userText.toLowerCase();
-      for (const group of MOCK_REPLIES) {
-        if (group.keywords.some(k => text.includes(k))) {
-          return group.replies[Math.floor(Math.random() * group.replies.length)];
-        }
+    const STATUSES = ['قيد الانتظار', 'جاري التحضير', 'في الطريق', 'تم التسليم'];
+    const STATUS_COLORS = {
+      'قيد الانتظار': { bg: '#FBF3E3', fg: '#8A6A2E' },
+      'جاري التحضير': { bg: '#FBEAEF', fg: '#7A1636' },
+      'في الطريق':    { bg: '#EAF0FB', fg: '#2A4E8A' },
+      'تم التسليم':   { bg: '#E9F1EC', fg: '#4B7A5D' },
+    };
+
+    // ---------- Product rendering ----------
+    function renderProducts() {
+      const grid = document.getElementById('productsGrid');
+      document.getElementById('productCount').innerText = `${PRODUCTS.length} منتجات`;
+      grid.innerHTML = PRODUCTS.map(p => {
+        const qty = cart[p.id] || 0;
+        return `
+          <div class="product-card">
+            <div class="product-img-wrap">
+              <img src="${p.img}" alt="${p.name}" loading="lazy">
+            </div>
+            <div class="product-body">
+              <div class="product-title">${p.name}</div>
+              <div class="product-unit">${p.unit}</div>
+              <div class="product-row">
+                <span class="product-price">${p.price} ﷼</span>
+                ${qty > 0
+                  ? `<span class="qty-pill">${qty}</span> <button class="add-btn in-cart" onclick="addToCart('${p.id}')">+</button>`
+                  : `<button class="add-btn" onclick="addToCart('${p.id}')">+</button>`}
+              </div>
+            </div>
+          </div>`;
+      }).join('');
+    }
+
+    function addToCart(productId) {
+      cart[productId] = (cart[productId] || 0) + 1;
+      updateCartUI();
+      renderProducts();
+    }
+
+    function cartTotal() {
+      return Object.entries(cart).reduce((sum, [id, qty]) => {
+        const p = PRODUCTS.find(p => p.id === id);
+        return sum + (p ? p.price * qty : 0);
+      }, 0);
+    }
+
+    function updateCartUI() {
+      const total = cartTotal();
+      document.getElementById('cartTotal').innerText = total;
+      document.getElementById('checkoutBtn').disabled = total === 0;
+    }
+
+    // ---------- Checkout -> creates order -> merchant sees it instantly ----------
+    function checkout() {
+      const total = cartTotal();
+      if (total === 0) return;
+
+      const items = Object.entries(cart).map(([id, qty]) => {
+        const p = PRODUCTS.find(p => p.id === id);
+        return { name: p.name, qty, price: p.price };
+      });
+
+      orderCounter += 1;
+      const order = {
+        id: orderCounter,
+        customerName: 'زبون جديد',
+        items,
+        total,
+        status: STATUSES[0],
+        time: new Date().toLocaleTimeString('ar-QA', { hour: '2-digit', minute: '2-digit' }),
+        isNew: true,
+      };
+
+      orders.unshift(order);
+      unseenOrders += 1;
+
+      cart = {};
+      updateCartUI();
+      renderProducts();
+      renderOrders();
+      updateOrderBadge();
+      showToast(`✅ تم إرسال الطلب #${order.id} للبقالة`);
+    }
+
+    // ---------- Merchant order rendering ----------
+    function renderOrders() {
+      const list = document.getElementById('ordersList');
+
+      if (orders.length === 0) {
+        list.innerHTML = `<div class="empty-state">لا توجد طلبات حالياً 🕒<br>ستظهر طلبات الزبائن هنا فور تأكيدها.</div>`;
+        return;
       }
-      return FALLBACK_REPLIES[Math.floor(Math.random() * FALLBACK_REPLIES.length)];
+
+      list.innerHTML = orders.map(order => {
+        const itemsText = order.items.map(i => `${i.name} × ${i.qty}`).join(' ، ');
+        const colors = STATUS_COLORS[order.status];
+        const options = STATUSES.map(s =>
+          `<option value="${s}" ${s === order.status ? 'selected' : ''}>${s}</option>`
+        ).join('');
+
+        const cardClasses = order.isNew ? 'order-card new' : 'order-card';
+
+        return `
+          <div class="${cardClasses}">
+            <div class="order-top">
+              <span class="order-id">طلب #${order.id} - ${order.customerName}</span>
+              <span class="order-time">${order.time}</span>
+            </div>
+            <div class="order-items">${itemsText}</div>
+            <div class="order-total">الإجمالي: ${order.total} ﷼</div>
+            <div class="order-status-row">
+              <span class="status-pill" style="background:${colors.bg}; color:${colors.fg};">${order.status}</span>
+              <select class="status-select" onchange="updateOrderStatus(${order.id}, this.value)">
+                ${options}
+              </select>
+            </div>
+          </div>`;
+      }).join('');
+
+      orders.forEach(o => o.isNew = false);
     }
 
-    function setOpen(v) {
-      open = v;
-      panel.classList.toggle('hidden', !open);
-      panel.classList.toggle('flex', open);
-      toggleIcon.innerHTML = open
-        ? '<path d="M6 6l12 12M18 6 6 18" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>'
-        : '<path d="M4 4h16v12H8l-4 4V4Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/>';
-      if (open) input.focus();
+    function updateOrderStatus(orderId, newStatus) {
+      const order = orders.find(o => o.id === orderId);
+      if (!order) return;
+      order.status = newStatus;
+      renderOrders();
+      showToast(`تم تحديث حالة الطلب #${orderId} إلى "${newStatus}"`);
     }
 
-    toggleBtn.addEventListener('click', () => setOpen(!open));
-    closeBtn.addEventListener('click', () => setOpen(false));
-
-    function addBubble(text, sender) {
-      const div = document.createElement('div');
-      const base = 'max-w-[85%] rounded-2xl px-4 py-2.5 text-sm leading-relaxed';
-      if (sender === 'user') {
-        div.className = base + ' ml-auto bg-indigo text-paper rounded-tl-sm';
+    function updateOrderBadge() {
+      const badge = document.getElementById('orderBadge');
+      if (currentRole === 'merchant' || unseenOrders === 0) {
+        badge.classList.add('hidden');
       } else {
-        div.className = base + ' mr-auto bg-white border border-ink/8 text-ink/80 rounded-tr-sm';
+        badge.classList.remove('hidden');
+        badge.innerText = unseenOrders;
       }
-      div.textContent = text;
-      messages.appendChild(div);
-      messages.scrollTop = messages.scrollHeight;
-      return div;
     }
 
-    function handleSubmit(e) {
-      e.preventDefault();
+    // ---------- Toast ----------
+    let toastTimer;
+    function showToast(msg) {
+      const toast = document.getElementById('toast');
+      toast.innerText = msg;
+      toast.classList.add('show');
+      clearTimeout(toastTimer);
+      toastTimer = setTimeout(() => toast.classList.remove('show'), 2500);
+    }
+
+    // ---------- Chat / role switching ----------
+    function toggleChat() {
+      const win = document.getElementById('chatWin');
+      win.style.display = win.style.display === 'flex' ? 'none' : 'flex';
+    }
+
+    function switchRole(role) {
+      currentRole = role;
+      document.getElementById('btn-cust').classList.toggle('active', role === 'customer');
+      document.getElementById('btn-merch').classList.toggle('active', role === 'merchant');
+      document.getElementById('customer-view').classList.toggle('hidden', role !== 'customer');
+      document.getElementById('merchant-view').classList.toggle('hidden', role !== 'merchant');
+
+      if (role === 'merchant') {
+        unseenOrders = 0;
+        renderOrders();
+      }
+      updateOrderBadge();
+
+      const title = document.getElementById('chatTitle');
+      const welcome = document.getElementById('welcomeMsg');
+
+      if (role === 'customer') {
+        title.innerText = "✨ Gemini (مساعد الزبون)";
+        welcome.innerText = "أهلاً بك! أنا مساعد Gemini. يمكنني مساعدتك في الطلبات أو توفير معلومات التواصل مع المساعدة الفورية.";
+      } else {
+        title.innerText = "✨ Gemini (مساعد البقال)";
+        welcome.innerText = "أهلاً بك يا صاحب البقالة! يمكنني مساعدتك في إدارة المبيعات والتواصل مع الدعم الفني للمنصة عبر www.bkalati.com.";
+      }
+    }
+
+    function quickAsk(text) {
+      toggleChat();
+      document.getElementById('userInput').value = text;
+      sendMsg();
+    }
+
+    function sendMsg() {
+      const input = document.getElementById('userInput');
       const text = input.value.trim();
       if (!text) return;
 
-      addBubble(text, 'user');
-      history.push({ role: 'user', content: text });
+      const msgs = document.getElementById('chatMsgs');
+      msgs.innerHTML += `<div class="chat-msg user">${text}</div>`;
       input.value = '';
-      input.disabled = true;
-      sendBtn.disabled = true;
 
-      const loading = addBubble('...جارٍ الكتابة', 'bot');
-      loading.classList.add('opacity-60', 'italic');
-
-      // رد فوري محلي (Mock AI) بعد ثانية واحدة — بلا API ولا سيرفر خارجي
       setTimeout(() => {
-        const reply = pickReply(text);
-        loading.textContent = reply;
-        loading.classList.remove('opacity-60', 'italic');
-        history.push({ role: 'assistant', content: reply });
-        input.disabled = false;
-        sendBtn.disabled = false;
-        input.focus();
-      }, 1000);
+        let reply = "";
+        if (text.includes("تواصل") || text.includes("دعم") || text.includes("مساعدة") || text.includes("إيميل") || text.includes("بريد") || text.includes("واتساب") || text.includes("موقع")) {
+          reply = `يمكنك التواصل مع إدارة موقع <b>www.bkalati.com</b> مباشرة عبر القنوات التالية:<br><br>
+          📱 <b>WhatsApp:</b> <span class="phone-num">+974 5997 8290</span><br>
+          ✉️ <b>Email:</b> bkalati-help@bkalati.com<br><br>
+          <a href="https://wa.me/97459978290" target="_blank" class="contact-badge wa-badge">WhatsApp Direct</a>
+          <a href="mailto:bkalati-help@bkalati.com" class="contact-badge email-badge">Send Email</a>`;
+        } else if (currentRole === 'customer') {
+          if (text.includes("عشاء") || text.includes("وجبة")) {
+            reply = "💡 يمكنك إضافة الخبز والجبنة والبيض لإعداد عشاء سريع ولذيذ من البقالة القريبة منك!";
+          } else {
+            reply = "🤖 يسعدني مساعدتك! يمكنك اختيار المنتجات من الشاشة أو طلب المساعدة الفورية في أي وقت عبر موقعنا www.bkalati.com.";
+          }
+        } else {
+          reply = "📈 اقتراح Gemini للبقال: يفضل تجهيز عروض حزم على الألبان والمخبوزات للفترة المسائية لزيادة المبيعات.";
+        }
+        msgs.innerHTML += `<div class="chat-msg bot">${reply}</div>`;
+        msgs.scrollTop = msgs.scrollHeight;
+      }, 500);
     }
 
-    form.addEventListener('submit', handleSubmit);
-  })();
-</script>
-
+    // ---------- Init ----------
+    renderProducts();
+    renderOrders();
+    updateCartUI();
+  </script>
 </body>
 </html>
