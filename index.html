@@ -3,12 +3,11 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>منصة بقالتي المتكاملة | Bkalati Platform</title>
+  <title>منصة بقالتي المتكاملة | Bkalati</title>
   <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
   <style>
     :root {
       --primary: #059669;
-      --primary-hover: #047857;
       --primary-light: #ecfdf5;
       --burgundy: #800020;
       --bg: #f8fafc;
@@ -66,6 +65,14 @@
     .product-price { color: var(--primary); font-weight: 800; font-size: 13px; margin: 4px 0; }
     .add-btn { background: var(--primary); color: white; border: none; padding: 7px; border-radius: 8px; cursor: pointer; font-weight: 700; width: 100%; font-size: 11px; }
 
+    /* Live Tracking Map Component */
+    .map-box {
+      width: 100%; height: 140px; background: #e2e8f0; border-radius: 12px; position: relative; overflow: hidden;
+      display: flex; align-items: center; justify-content: center; background-image: radial-gradient(#cbd5e1 1px, transparent 0); background-size: 12px 12px;
+    }
+    .driver-icon { position: absolute; font-size: 22px; transition: all 1s ease-in-out; }
+    .home-icon { position: absolute; left: 20px; font-size: 22px; }
+
     /* Modals & Screens */
     .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 200; justify-content: center; align-items: flex-end; }
     .modal-content { background: white; width: 100%; max-width: 480px; border-radius: 20px 20px 0 0; padding: 20px; max-height: 85vh; overflow-y: auto; }
@@ -73,12 +80,14 @@
     .form-group label { display: block; font-size: 11px; font-weight: 700; margin-bottom: 4px; color: var(--text-muted); }
     .form-group input, .form-group select { width: 100%; padding: 10px; border: 1px solid var(--border); border-radius: 8px; font-size: 12px; outline: none; }
 
-    /* Merchant Dashboard */
+    /* Merchant Dashboard Stats */
+    .stats-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 14px; }
+    .stat-card { background: #f1f5f9; padding: 10px; border-radius: 10px; text-align: center; }
+    .stat-number { font-weight: 800; font-size: 16px; color: var(--burgundy); }
+    .stat-label { font-size: 10px; color: var(--text-muted); }
+
     .order-card { background: white; border: 1px solid var(--border); border-radius: 12px; padding: 12px; margin-bottom: 10px; }
     .status-badge { display: inline-block; padding: 3px 8px; border-radius: 12px; font-size: 10px; font-weight: 700; }
-    .status-new { background: #fef3c7; color: #92400e; }
-    .status-prep { background: #e0f2fe; color: #0369a1; }
-    .status-done { background: #dcfce7; color: #15803d; }
 
     /* Sticky Bottom Bar */
     .cart-bar { position: absolute; bottom: 0; left: 0; right: 0; background: white; border-top: 1px solid var(--border); padding: 12px 16px; display: flex; justify-content: space-between; align-items: center; z-index: 40; }
@@ -94,17 +103,27 @@
       <div class="header-content">
         <a href="#" class="logo">🛒 منصة بقالتي</a>
         <div class="role-switcher">
-          <button class="role-btn active" id="btn-cust" onclick="switchRole('customer')">واجهة الزبون</button>
-          <button class="role-btn" id="btn-merch" onclick="switchRole('merchant')">لوحة البقال</button>
+          <button class="role-btn active" id="btn-cust" onclick="switchRole('customer')">الزبون</button>
+          <button class="role-btn" id="btn-merch" onclick="switchRole('merchant')">لوحة البقال 📊</button>
         </div>
       </div>
     </header>
 
     <div class="container">
-      <!-- CUST VIEW -->
+      <!-- CUSTOMER VIEW -->
       <div id="customer-view">
         <div class="auth-banner" id="authBanner">
           👤 لم تسجل دخولك بعد. <a href="#" onclick="openModal('loginModal')" style="color:var(--primary); font-weight:700;">اضغط هنا للتسجيل / الدخول</a>
+        </div>
+
+        <!-- Track Active Order Box -->
+        <div id="trackingSection" class="card hidden" style="border-color: var(--primary);">
+          <h4 style="font-size:13px; font-weight:800; margin-bottom:6px;">تتبع طلبك مباشر 🛵</h4>
+          <p style="font-size:11px; color:var(--text-muted); margin-bottom:8px;">الحالة: <strong id="trackingStatusText" style="color:var(--primary);">في الطريق</strong></p>
+          <div class="map-box">
+            <span class="home-icon">🏠</span>
+            <span class="driver-icon" id="driverPin" style="right: 20px;">🛵</span>
+          </div>
         </div>
 
         <div class="card">
@@ -116,20 +135,38 @@
         <div class="products-grid" id="productsGrid"></div>
       </div>
 
-      <!-- MERCHANT VIEW -->
+      <!-- MERCHANT DASHBOARD VIEW -->
       <div id="merchant-view" class="hidden">
+        <h3 style="font-size:15px; font-weight:800; margin-bottom:10px;">لوحة تحكم البقالة 📊</h3>
+        
+        <!-- Stats -->
+        <div class="stats-grid">
+          <div class="stat-card">
+            <div class="stat-number" id="statOrdersCount">0</div>
+            <div class="stat-label">إجمالي الطلبات</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-number" id="statRevenue">0 ر.ق</div>
+            <div class="stat-label">المبيعات</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-number" id="statActive">0</div>
+            <div class="stat-label">قيد التوصيل</div>
+          </div>
+        </div>
+
         <div class="card">
-          <h3 style="font-size:14px; font-weight:800; margin-bottom:8px;">إضافة منتج جديد للمتجر ➕</h3>
+          <h4 style="font-size:13px; font-weight:800; margin-bottom:8px;">إضافة منتج جديد للمتجر ➕</h4>
           <div class="form-group">
             <input type="text" id="newProdName" placeholder="اسم المنتج">
           </div>
           <div class="form-group">
             <input type="number" id="newProdPrice" placeholder="السعر (ر.ق)">
           </div>
-          <button class="add-btn" onclick="addNewProduct()">إضافة المنتج فوراً</button>
+          <button class="add-btn" onclick="addNewProduct()">نشر المنتج في المتجر</button>
         </div>
 
-        <h4 style="font-size:13px; margin: 15px 0 10px 0;">لوحة الطلبات الواردة 📦</h4>
+        <h4 style="font-size:13px; margin: 15px 0 10px 0;">متابعة والتحكم بالطلبات الواردة 📦</h4>
         <div id="merchantOrdersList"></div>
       </div>
     </div>
@@ -185,7 +222,6 @@
   </div>
 
   <script>
-    // State Database (Local Storage Supported)
     let products = [
       { id: 1, name: "حليب طازج 1L", price: 6, img: "https://images.pexels.com/photos/248412/pexels-photo-248412.jpeg?auto=compress&cs=tinysrgb&w=400" },
       { id: 2, name: "خبز عربي طازج", price: 2, img: "https://images.pexels.com/photos/1775043/pexels-photo-1775043.jpeg?auto=compress&cs=tinysrgb&w=400" },
@@ -197,7 +233,6 @@
     let orders = [];
     let currentUser = null;
 
-    // Init App
     window.onload = function() {
       renderProducts();
       renderOrders();
@@ -260,7 +295,8 @@
         items: [...cart],
         total: total,
         payment: payMethod,
-        status: 'جديد ⏳'
+        status: 'جاري التحضير 👨‍🍳',
+        progress: 20
       };
 
       orders.unshift(newOrder);
@@ -268,11 +304,28 @@
       updateCartTotal();
       closeModal('checkoutModal');
       renderOrders();
+      showCustomerTracking(newOrder);
       alert(`تم إرسال طلبك بنجاح! رقم الطلب #${newOrder.id}`);
+    }
+
+    function showCustomerTracking(order) {
+      const trackSec = document.getElementById('trackingSection');
+      trackSec.classList.remove('hidden');
+      document.getElementById('trackingStatusText').innerText = order.status;
+      
+      // Move driver icon
+      const pin = document.getElementById('driverPin');
+      pin.style.right = (20 + (order.progress * 3.5)) + 'px';
     }
 
     function renderOrders() {
       const list = document.getElementById('merchantOrdersList');
+      
+      // Stats update
+      document.getElementById('statOrdersCount').innerText = orders.length;
+      document.getElementById('statRevenue').innerText = orders.reduce((s,o)=>s+o.total,0) + ' ر.ق';
+      document.getElementById('statActive').innerText = orders.filter(o=>o.status.includes('طريق')||o.status.includes('تحضير')).length;
+
       if (orders.length === 0) {
         list.innerHTML = `<div style="text-align:center; font-size:12px; color:var(--text-muted); padding:20px;">لا توجد طلبات حالية</div>`;
         return;
@@ -282,17 +335,16 @@
         <div class="order-card">
           <div style="display:flex; justify-content:space-between; margin-bottom:6px;">
             <strong>طلب #${o.id} - ${o.user.name}</strong>
-            <span class="status-badge status-new">${o.status}</span>
+            <span class="status-badge" style="background:#fef3c7;">${o.status}</span>
           </div>
           <div style="font-size:11px; color:var(--text-muted); margin-bottom:4px;">📱 ${o.user.phone} | 📍 ${o.address}</div>
           <div style="font-size:11px; margin-bottom:6px;">📦 الأصناف: ${o.items.map(i=>i.name).join('، ')}</div>
           <div style="font-size:12px; font-weight:700; color:var(--primary); display:flex; justify-content:space-between; align-items:center;">
             <span>المجموع: ${o.total} ر.ق (${o.payment})</span>
-            <select style="font-size:10px; padding:2px;" onchange="updateOrderStatus('${o.id}', this.value)">
-              <option value="جديد ⏳">جديد</option>
-              <option value="جاري التحضير 👨‍🍳">تحضير</option>
-              <option value="في الطريق 🛵">توصيل</option>
-              <option value="مكتمل ✅">مكتمل</option>
+            <select style="font-size:11px; padding:4px;" onchange="updateOrderStatus('${o.id}', this.value)">
+              <option value="جاري التحضير 👨‍🍳" ${o.status.includes('تحضير')?'selected':''}>تحضير</option>
+              <option value="في الطريق 🛵" ${o.status.includes('طريق')?'selected':''}>في الطريق</option>
+              <option value="مكتمل ✅" ${o.status.includes('مكتمل')?'selected':''}>تم التسليم</option>
             </select>
           </div>
         </div>
@@ -301,7 +353,12 @@
 
     function updateOrderStatus(id, newStatus) {
       const order = orders.find(o => o.id === id);
-      if (order) order.status = newStatus;
+      if (order) {
+        order.status = newStatus;
+        if(newStatus.includes('طريق')) order.progress = 65;
+        if(newStatus.includes('مكتمل')) order.progress = 100;
+        showCustomerTracking(order);
+      }
       renderOrders();
     }
 
