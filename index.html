@@ -1,12 +1,12 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ar" dir="rtl">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Anchor — Focus for freelancers</title>
+<title>المساعد — التركيز لأصحاب الأعمال الحرة</title>
 <script src="https://cdn.tailwindcss.com"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <script>
   tailwind.config = {
     theme: {
@@ -19,8 +19,8 @@
           mist: '#EDEDE6',
         },
         fontFamily: {
-          display: ['Fraunces', 'serif'],
-          body: ['Inter', 'sans-serif'],
+          display: ['Cairo', 'sans-serif'],
+          body: ['Cairo', 'sans-serif'],
         },
       },
     },
@@ -28,8 +28,7 @@
 </script>
 <style>
   html { scroll-behavior: smooth; }
-  body { font-family: 'Inter', sans-serif; background-color: #FAFAF7; color: #12213B; }
-  .font-display { font-family: 'Fraunces', serif; font-feature-settings: "ss01"; }
+  body { font-family: 'Cairo', sans-serif; background-color: #FAFAF7; color: #12213B; }
   .bearing-line {
     background-image: repeating-linear-gradient(90deg, #12213B22 0, #12213B22 1px, transparent 1px, transparent 8px);
   }
@@ -45,7 +44,7 @@
 </head>
 <body class="antialiased">
 
-<!-- Nav -->
+<!-- شريط التنقل -->
 <header class="max-w-6xl mx-auto px-6 sm:px-10 py-6 flex items-center justify-between">
   <div class="flex items-center gap-2">
     <svg width="22" height="22" viewBox="0 0 24 24" fill="none" class="text-ink">
@@ -53,50 +52,59 @@
       <circle cx="12" cy="12" r="6" stroke="currentColor" stroke-width="1.6"/>
       <circle cx="12" cy="12" r="1.6" fill="currentColor"/>
     </svg>
-    <span class="font-display text-lg tracking-tight">Anchor</span>
+    <span class="font-display font-bold text-lg tracking-tight">المساعد</span>
   </div>
-  <a href="#contact" class="text-sm font-medium border border-ink/15 rounded-full px-4 py-2 hover:bg-ink hover:text-paper transition-colors">Get in touch</a>
+  <a href="#contact" class="text-sm font-medium border border-ink/15 rounded-full px-4 py-2 hover:bg-ink hover:text-paper transition-colors">تواصل معنا</a>
 </header>
 
-<!-- Hero -->
+<!-- القسم الرئيسي -->
 <section class="max-w-6xl mx-auto px-6 sm:px-10 pt-10 sm:pt-16 pb-20 sm:pb-28">
   <div class="grid md:grid-cols-12 gap-10 items-end">
     <div class="md:col-span-8 rise">
-      <p class="uppercase text-xs tracking-[0.2em] text-teal font-semibold mb-5">One project at a time, on purpose</p>
-      <h1 class="font-display text-[2.6rem] sm:text-6xl leading-[1.05] tracking-tight text-ink">
-        Hold your course<br class="hidden sm:block"> when the work<br class="hidden sm:block"> pulls in six directions.
+      <p class="uppercase text-xs tracking-[0.2em] text-teal font-bold mb-5">مشروع واحد، بتركيز كامل</p>
+      <h1 class="font-display font-extrabold text-[2.4rem] sm:text-6xl leading-[1.15] tracking-tight text-ink">
+        حافظ على مسارك<br class="hidden sm:block">
+        حين يتوزع عملك<br class="hidden sm:block">
+        على ستة اتجاهات
       </h1>
       <p class="mt-7 text-lg text-ink/70 max-w-xl leading-relaxed">
-        Anchor is a single-project workspace for independent consultants. No backlog to groom, no board to reorganize — just the one client, the one deadline, and what's actually next.
+        المساعد مساحة عمل مخصصة لمشروع واحد، مصممة للمستقلين والاستشاريين. بلا قائمة مهام متضخمة ولا لوحة معقدة — فقط العميل الحالي، الموعد النهائي، والخطوة التالية.
       </p>
+      <div class="mt-5 inline-flex items-center gap-2 bg-white border border-ink/10 rounded-full px-4 py-2 text-sm text-ink/70">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" class="text-teal shrink-0">
+          <path d="M12 2 2 7l10 5 10-5-10-5Z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/>
+          <path d="M2 17l10 5 10-5M2 12l10 5 10-5" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/>
+        </svg>
+        مدعوم بتقنية شات جي بي تي للمساعدة الذكية داخل مشروعك
+      </div>
       <div class="mt-9 flex flex-wrap items-center gap-4">
-        <a href="#contact" class="inline-flex items-center gap-2 bg-indigo text-paper font-medium px-6 py-3.5 rounded-full hover:bg-ink transition-colors">
-          Start your first project
-          <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <a href="#contact" class="inline-flex items-center gap-2 bg-indigo text-paper font-semibold px-6 py-3.5 rounded-full hover:bg-ink transition-colors">
+          ابدأ مشروعك الأول
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" class="scale-x-[-1]"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
         </a>
-        <span class="text-sm text-ink/50">Free for your first 3 clients</span>
+        <span class="text-sm text-ink/50">مجاني حتى ثلاثة عملاء</span>
       </div>
     </div>
     <div class="md:col-span-4 rise" style="animation-delay:.15s">
       <div class="bearing-line rounded-2xl border border-ink/10 bg-white/60 p-6">
-        <p class="text-xs uppercase tracking-widest text-ink/40 mb-4">Currently steering</p>
-        <p class="font-display text-2xl text-ink mb-1">Hallberg &amp; Rye</p>
-        <p class="text-sm text-ink/50 mb-5">Brand identity · Week 3 of 4</p>
+        <p class="text-xs uppercase tracking-widest text-ink/40 mb-4">المشروع الحالي</p>
+        <p class="font-display font-bold text-2xl text-ink mb-1">شركة هلبرغ للتصميم</p>
+        <p class="text-sm text-ink/50 mb-5">هوية بصرية · الأسبوع الثالث من أربعة</p>
         <div class="h-1.5 w-full bg-ink/10 rounded-full overflow-hidden">
           <div class="h-full bg-teal rounded-full" style="width:62%"></div>
         </div>
-        <p class="mt-4 text-sm text-ink/70">Next: send revised logo lockups for sign-off.</p>
+        <p class="mt-4 text-sm text-ink/70">التالي: إرسال نسخ الشعار المعدّلة للاعتماد.</p>
       </div>
     </div>
   </div>
 </section>
 
-<!-- Features -->
+<!-- المزايا -->
 <section class="bg-mist/60 border-y border-ink/5">
   <div class="max-w-6xl mx-auto px-6 sm:px-10 py-20 sm:py-24">
     <div class="max-w-xl mb-14">
-      <h2 class="font-display text-3xl sm:text-4xl text-ink tracking-tight">Built for the work of one</h2>
-      <p class="mt-4 text-ink/70 leading-relaxed">Every feature answers a question a freelancer actually asks, not a team's org chart.</p>
+      <h2 class="font-display font-extrabold text-3xl sm:text-4xl text-ink tracking-tight">مصمم لعمل الفرد الواحد</h2>
+      <p class="mt-4 text-ink/70 leading-relaxed">كل ميزة تجيب عن سؤال يطرحه المستقل فعلًا، لا عن هيكل فريق كامل.</p>
     </div>
     <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
 
@@ -104,8 +112,8 @@
         <svg width="26" height="26" viewBox="0 0 24 24" fill="none" class="text-indigo mb-5">
           <path d="M4 12l6 6L20 6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
         </svg>
-        <h3 class="font-display text-xl text-ink mb-2">A true single view</h3>
-        <p class="text-sm text-ink/65 leading-relaxed">Every task, file, and note for the current client lives on one page. Switching projects clears the deck — nothing else competes for attention.</p>
+        <h3 class="font-display font-bold text-xl text-ink mb-2">واجهة واحدة موحّدة</h3>
+        <p class="text-sm text-ink/65 leading-relaxed">كل مهمة وملف وملاحظة خاصة بالعميل الحالي في صفحة واحدة. عند التبديل بين المشاريع تُمسح الشاشة تمامًا، فلا شيء يشتت انتباهك.</p>
       </div>
 
       <div class="bg-white rounded-2xl p-7 border border-ink/8">
@@ -113,60 +121,77 @@
           <circle cx="12" cy="12" r="8" stroke="currentColor" stroke-width="1.8"/>
           <path d="M12 8v4l3 2" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
         </svg>
-        <h3 class="font-display text-xl text-ink mb-2">Deadlines that push back</h3>
-        <p class="text-sm text-ink/65 leading-relaxed">Add a delivery date and Anchor works backward, flagging the day a task needs to start so the deadline never sneaks up on you.</p>
+        <h3 class="font-display font-bold text-xl text-ink mb-2">مواعيد نهائية تُنبّهك مبكرًا</h3>
+        <p class="text-sm text-ink/65 leading-relaxed">أضف تاريخ التسليم، ويحسب المساعد تلقائيًا اليوم الذي يجب أن تبدأ فيه كل مهمة، حتى لا يفاجئك الموعد النهائي أبدًا.</p>
       </div>
 
       <div class="bg-white rounded-2xl p-7 border border-ink/8">
         <svg width="26" height="26" viewBox="0 0 24 24" fill="none" class="text-indigo mb-5">
           <path d="M4 6h16M4 12h10M4 18h13" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
         </svg>
-        <h3 class="font-display text-xl text-ink mb-2">A record worth reusing</h3>
-        <p class="text-sm text-ink/65 leading-relaxed">When a project closes, Anchor turns the timeline into a plain-language summary you can drop straight into an invoice or a case study.</p>
+        <h3 class="font-display font-bold text-xl text-ink mb-2">سجل تستفيد منه لاحقًا</h3>
+        <p class="text-sm text-ink/65 leading-relaxed">عند إغلاق المشروع، يحوّل المساعد الجدول الزمني إلى ملخص واضح يمكنك إضافته مباشرة إلى الفاتورة أو دراسة الحالة.</p>
+      </div>
+
+      <div class="bg-white rounded-2xl p-7 border border-ink/8">
+        <svg width="26" height="26" viewBox="0 0 24 24" fill="none" class="text-indigo mb-5">
+          <path d="M12 3v3M12 18v3M4.2 4.2l2.1 2.1M17.7 17.7l2.1 2.1M3 12h3M18 12h3M4.2 19.8l2.1-2.1M17.7 6.3l2.1-2.1" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+          <circle cx="12" cy="12" r="3.2" stroke="currentColor" stroke-width="1.8"/>
+        </svg>
+        <h3 class="font-display font-bold text-xl text-ink mb-2">مساعد ذكي بتقنية شات جي بي تي</h3>
+        <p class="text-sm text-ink/65 leading-relaxed">اطرح سؤالك على مساعد المشروع مباشرة — يلخّص المستجدات، يقترح الخطوة التالية، ويصيغ ردود العملاء بالنيابة عنك، كل ذلك داخل نفس الشاشة.</p>
       </div>
 
     </div>
   </div>
 </section>
 
-<!-- Contact -->
+<!-- التواصل -->
 <section id="contact" class="max-w-6xl mx-auto px-6 sm:px-10 py-20 sm:py-28">
   <div class="grid md:grid-cols-12 gap-12">
     <div class="md:col-span-5">
-      <h2 class="font-display text-3xl sm:text-4xl text-ink tracking-tight">Tell us about your work</h2>
-      <p class="mt-4 text-ink/70 leading-relaxed max-w-sm">We reply within a day, from a person who's used Anchor on real client work — not a support queue.</p>
-      <div class="mt-8 flex items-center gap-3 text-sm text-ink/50">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M4 5h16a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V6a1 1 0 0 1 1-1Z" stroke="currentColor" stroke-width="1.6"/><path d="m3.5 6 8.5 6.5L20.5 6" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
-        hello@anchor.work
+      <h2 class="font-display font-extrabold text-3xl sm:text-4xl text-ink tracking-tight">حدّثنا عن طبيعة عملك</h2>
+      <p class="mt-4 text-ink/70 leading-relaxed max-w-sm">نرد خلال يوم واحد، ومن شخص استخدم المساعد فعليًا في عمل حقيقي مع عملاء — لا من فريق دعم آلي.</p>
+      <div class="mt-8 space-y-3 text-sm text-ink/60">
+        <a href="mailto:habibyous@gmail.com" class="flex items-center gap-3 hover:text-indigo transition-colors">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" class="shrink-0"><path d="M4 5h16a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V6a1 1 0 0 1 1-1Z" stroke="currentColor" stroke-width="1.6"/><path d="m3.5 6 8.5 6.5L20.5 6" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+          <span dir="ltr">habibyous@gmail.com</span>
+        </a>
+        <a href="https://wa.me/97459978290" target="_blank" rel="noopener" class="flex items-center gap-3 hover:text-teal transition-colors">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" class="shrink-0">
+            <path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.75.46 3.44 1.32 4.94L2 22l5.29-1.38a9.9 9.9 0 0 0 4.75 1.21h.01c5.46 0 9.9-4.45 9.9-9.91C21.96 6.45 17.5 2 12.04 2Zm5.8 14.05c-.24.68-1.4 1.3-1.93 1.38-.49.08-1.11.11-1.79-.11-.41-.13-.94-.3-1.62-.6-2.86-1.24-4.72-4.12-4.86-4.31-.14-.19-1.16-1.54-1.16-2.94s.72-2.08.98-2.37c.24-.27.55-.34.73-.34h.53c.17 0 .4-.03.63.48.24.55.8 1.9.87 2.03.07.14.11.3.02.48-.09.19-.14.3-.27.46-.14.16-.29.36-.41.48-.14.14-.28.29-.12.57.16.27.71 1.17 1.53 1.9 1.05.94 1.94 1.23 2.21 1.37.27.14.43.11.59-.07.16-.19.68-.79.86-1.06.18-.27.36-.22.6-.13.24.08 1.55.73 1.82.87.27.13.44.19.51.3.07.11.07.63-.17 1.3Z"/>
+          </svg>
+          <span dir="ltr">+974 5997 8290</span>
+        </a>
       </div>
     </div>
 
     <form class="md:col-span-7 bg-white border border-ink/10 rounded-2xl p-7 sm:p-9">
       <div class="grid sm:grid-cols-2 gap-5">
         <div>
-          <label for="name" class="block text-sm font-medium text-ink/80 mb-1.5">Name</label>
-          <input type="text" id="name" name="name" placeholder="Jordan Lee"
+          <label for="name" class="block text-sm font-medium text-ink/80 mb-1.5">الاسم</label>
+          <input type="text" id="name" name="name" placeholder="سارة أحمد"
             class="w-full rounded-lg border border-ink/15 px-4 py-2.5 text-sm placeholder:text-ink/30 focus:border-indigo">
         </div>
         <div>
-          <label for="email" class="block text-sm font-medium text-ink/80 mb-1.5">Email</label>
-          <input type="email" id="email" name="email" placeholder="jordan@studio.com"
-            class="w-full rounded-lg border border-ink/15 px-4 py-2.5 text-sm placeholder:text-ink/30 focus:border-indigo">
+          <label for="email" class="block text-sm font-medium text-ink/80 mb-1.5">البريد الإلكتروني</label>
+          <input type="email" id="email" name="email" placeholder="sara@studio.com" dir="ltr"
+            class="w-full rounded-lg border border-ink/15 px-4 py-2.5 text-sm text-right placeholder:text-ink/30 focus:border-indigo">
         </div>
       </div>
       <div class="mt-5">
-        <label for="role" class="block text-sm font-medium text-ink/80 mb-1.5">What kind of work do you do?</label>
-        <input type="text" id="role" name="role" placeholder="Brand design, copywriting, dev consulting…"
+        <label for="role" class="block text-sm font-medium text-ink/80 mb-1.5">ما طبيعة عملك؟</label>
+        <input type="text" id="role" name="role" placeholder="تصميم هوية، كتابة محتوى، استشارات تقنية…"
           class="w-full rounded-lg border border-ink/15 px-4 py-2.5 text-sm placeholder:text-ink/30 focus:border-indigo">
       </div>
       <div class="mt-5">
-        <label for="message" class="block text-sm font-medium text-ink/80 mb-1.5">Message</label>
-        <textarea id="message" name="message" rows="4" placeholder="What's slowing you down right now?"
+        <label for="message" class="block text-sm font-medium text-ink/80 mb-1.5">رسالتك</label>
+        <textarea id="message" name="message" rows="4" placeholder="ما الذي يعطّل سير عملك حاليًا؟"
           class="w-full rounded-lg border border-ink/15 px-4 py-2.5 text-sm placeholder:text-ink/30 focus:border-indigo resize-none"></textarea>
       </div>
       <button type="submit"
-        class="mt-6 inline-flex items-center gap-2 bg-ink text-paper font-medium px-6 py-3 rounded-full hover:bg-indigo transition-colors">
-        Send message
+        class="mt-6 inline-flex items-center gap-2 bg-ink text-paper font-semibold px-6 py-3 rounded-full hover:bg-indigo transition-colors">
+        إرسال الرسالة
       </button>
     </form>
   </div>
@@ -174,8 +199,8 @@
 
 <footer class="border-t border-ink/8">
   <div class="max-w-6xl mx-auto px-6 sm:px-10 py-8 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-ink/40">
-    <span>© 2026 Anchor. Made for a workday of one.</span>
-    <span>Freelance operations software</span>
+    <span>© 2026 المساعد. صُنع لعمل يوم واحد من نوعه.</span>
+    <span>برنامج إدارة أعمال للمستقلين</span>
   </div>
 </footer>
 
