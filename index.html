@@ -3,108 +3,86 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>منصة بقالتي | www.bkalati.com</title>
+  <title>منصة بقالتي المتكاملة | Bkalati Platform</title>
   <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
   <style>
     :root {
       --primary: #059669;
       --primary-hover: #047857;
       --primary-light: #ecfdf5;
-      --accent: #6366f1;
+      --burgundy: #800020;
       --bg: #f8fafc;
       --card-bg: #ffffff;
       --text: #0f172a;
       --text-muted: #64748b;
       --border: #e2e8f0;
-      --shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.05);
+      --shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.06);
     }
 
-    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Tajawal', system-ui, sans-serif; }
-    body { background-color: #e2e8f0; color: var(--text); -webkit-font-smoothing: antialiased; display: flex; justify-content: center; min-height: 100vh; padding: 20px 0; }
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Tajawal', sans-serif; }
+    body { background-color: #cbd5e1; color: var(--text); display: flex; justify-content: center; min-height: 100vh; padding: 10px 0; }
     
-    /* App Frame Container */
     .app-frame {
       width: 100%;
       max-width: 480px;
       background-color: var(--bg);
-      min-height: 100vh;
+      min-height: 95vh;
       position: relative;
-      box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-      border-radius: 20px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+      border-radius: 24px;
       overflow: hidden;
       display: flex;
       flex-direction: column;
-      padding-bottom: 110px;
+      padding-bottom: 90px;
     }
 
-    /* Top Header */
+    /* Header */
     header {
-      background: linear-gradient(135deg, #800020 0%, #4a0012 100%);
+      background: linear-gradient(135deg, var(--burgundy) 0%, #4a0012 100%);
       color: white;
-      padding: 16px 20px;
+      padding: 14px 18px;
       position: sticky;
       top: 0;
       z-index: 50;
-      box-shadow: 0 4px 15px rgba(0,0,0,0.08);
     }
-    .header-content {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-    .logo-container { display: flex; flex-direction: column; }
-    .logo { font-size: 20px; font-weight: 800; text-decoration: none; color: white; }
-    .domain { font-size: 10px; opacity: 0.85; direction: ltr; font-weight: 500; text-align: right; }
+    .header-content { display: flex; justify-content: space-between; align-items: center; }
+    .logo { font-size: 18px; font-weight: 800; color: white; text-decoration: none; }
+    .role-switcher { display: flex; gap: 4px; background: rgba(255, 255, 255, 0.2); padding: 3px; border-radius: 16px; }
+    .role-btn { border: none; background: transparent; color: white; padding: 5px 12px; border-radius: 12px; cursor: pointer; font-size: 11px; font-weight: 700; transition: 0.2s; }
+    .role-btn.active { background: white; color: var(--burgundy); }
+
+    .container { padding: 14px; flex: 1; overflow-y: auto; }
+
+    /* Cards & UI */
+    .card { background: var(--card-bg); border-radius: 16px; padding: 14px; margin-bottom: 14px; border: 1px solid var(--border); box-shadow: var(--shadow); }
+    .auth-banner { background: var(--primary-light); border: 1px dashed var(--primary); text-align: center; font-size: 12px; padding: 10px; border-radius: 12px; margin-bottom: 12px; }
     
-    .role-switcher { display: flex; gap: 4px; background: rgba(255, 255, 255, 0.2); padding: 4px; border-radius: 20px; }
-    .role-btn { border: none; background: transparent; color: white; padding: 6px 12px; border-radius: 16px; cursor: pointer; font-size: 12px; font-weight: 700; transition: all 0.2s; }
-    .role-btn.active { background: white; color: #800020; box-shadow: 0 2px 6px rgba(0,0,0,0.1); }
-
-    .container { padding: 16px; flex: 1; }
-
-    /* Support Bar */
-    .support-bar { background: var(--card-bg); border: 1px solid var(--border); border-radius: 12px; padding: 10px 14px; margin-bottom: 16px; display: flex; justify-content: space-between; align-items: center; font-size: 11px; box-shadow: var(--shadow); }
-    .support-item { display: flex; align-items: center; gap: 4px; color: var(--text-muted); font-weight: 500; }
-    .support-item a { color: #800020; text-decoration: none; font-weight: 700; }
-    .phone-num { direction: ltr; unicode-bidi: embed; display: inline-block; }
-
-    /* Store Info Card */
-    .store-card { background: var(--card-bg); padding: 14px; border-radius: 16px; margin-bottom: 16px; box-shadow: var(--shadow); border: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; }
-    .badge-open { background: var(--primary-light); color: var(--primary); padding: 4px 10px; border-radius: 20px; font-size: 11px; font-weight: 700; }
-
-    /* Action Buttons */
-    .suggestions { display: flex; gap: 8px; margin-bottom: 16px; justify-content: center; }
-    .sug-btn { background: #fef3c7; color: #92400e; border: none; padding: 8px 14px; border-radius: 20px; font-size: 12px; cursor: pointer; font-weight: 700; }
-
     /* Products Grid */
-    .products-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
-    .product-card { background: var(--card-bg); border-radius: 16px; padding: 10px; border: 1px solid var(--border); box-shadow: var(--shadow); display: flex; flex-direction: column; justify-content: space-between; }
-    .img-wrapper { width: 100%; height: 110px; border-radius: 12px; overflow: hidden; background: #f1f5f9; margin-bottom: 8px; }
+    .products-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
+    .product-card { background: var(--card-bg); border-radius: 14px; padding: 10px; border: 1px solid var(--border); display: flex; flex-direction: column; justify-content: space-between; }
+    .img-wrapper { width: 100%; height: 95px; border-radius: 10px; overflow: hidden; background: #f1f5f9; margin-bottom: 6px; }
     .product-img { width: 100%; height: 100%; object-fit: cover; }
-    .product-title { font-weight: 700; font-size: 13px; color: var(--text); }
-    .product-price { color: var(--primary); font-weight: 800; font-size: 13px; margin: 4px 0 8px 0; }
-    .add-btn { background: var(--primary); color: white; border: none; padding: 8px; border-radius: 8px; cursor: pointer; font-weight: 700; width: 100%; font-size: 12px; }
+    .product-title { font-weight: 700; font-size: 12px; }
+    .product-price { color: var(--primary); font-weight: 800; font-size: 13px; margin: 4px 0; }
+    .add-btn { background: var(--primary); color: white; border: none; padding: 7px; border-radius: 8px; cursor: pointer; font-weight: 700; width: 100%; font-size: 11px; }
 
-    /* Fixed Floating Actions INSIDE the frame */
-    .fab-container { position: absolute; bottom: 85px; right: 16px; display: flex; flex-direction: column; gap: 8px; z-index: 45; }
-    .whatsapp-fab { background-color: #25d366; color: white; border: none; padding: 8px 14px; border-radius: 20px; font-weight: 700; cursor: pointer; box-shadow: 0 4px 12px rgba(37, 211, 102, 0.3); font-size: 11px; text-decoration: none; display: flex; align-items: center; gap: 4px; }
-    .gemini-fab { background: linear-gradient(135deg, #4f46e5, #9333ea); color: white; border: none; padding: 8px 14px; border-radius: 20px; font-weight: 700; cursor: pointer; box-shadow: 0 4px 12px rgba(147, 51, 234, 0.3); font-size: 11px; display: flex; align-items: center; gap: 4px; }
+    /* Modals & Screens */
+    .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 200; justify-content: center; align-items: flex-end; }
+    .modal-content { background: white; width: 100%; max-width: 480px; border-radius: 20px 20px 0 0; padding: 20px; max-height: 85vh; overflow-y: auto; }
+    .form-group { margin-bottom: 12px; }
+    .form-group label { display: block; font-size: 11px; font-weight: 700; margin-bottom: 4px; color: var(--text-muted); }
+    .form-group input, .form-group select { width: 100%; padding: 10px; border: 1px solid var(--border); border-radius: 8px; font-size: 12px; outline: none; }
 
-    /* Bottom Cart Bar */
-    .cart-bar { position: absolute; bottom: 0; left: 0; right: 0; background: var(--card-bg); border-top: 1px solid var(--border); padding: 12px 16px; display: flex; justify-content: space-between; align-items: center; z-index: 40; box-shadow: 0 -4px 20px rgba(0,0,0,0.05); }
-    .cart-info { font-weight: 800; font-size: 15px; color: var(--text); }
-    .checkout-btn { background: var(--primary); color: white; border: none; padding: 10px 18px; border-radius: 10px; font-weight: 700; cursor: pointer; font-size: 13px; }
+    /* Merchant Dashboard */
+    .order-card { background: white; border: 1px solid var(--border); border-radius: 12px; padding: 12px; margin-bottom: 10px; }
+    .status-badge { display: inline-block; padding: 3px 8px; border-radius: 12px; font-size: 10px; font-weight: 700; }
+    .status-new { background: #fef3c7; color: #92400e; }
+    .status-prep { background: #e0f2fe; color: #0369a1; }
+    .status-done { background: #dcfce7; color: #15803d; }
 
-    /* Chat Window Inside Frame */
-    .chat-window { display: none; position: absolute; bottom: 80px; left: 16px; right: 16px; height: 350px; background: white; border-radius: 16px; box-shadow: 0 10px 25px rgba(0,0,0,0.2); flex-direction: column; z-index: 100; overflow: hidden; border: 1px solid var(--border); }
-    .chat-header { background: linear-gradient(135deg, #4f46e5, #9333ea); color: white; padding: 10px 14px; display: flex; justify-content: space-between; align-items: center; font-size: 12px; font-weight: 700; }
-    .chat-messages { flex: 1; padding: 10px; overflow-y: auto; display: flex; flex-direction: column; gap: 8px; background: #f8fafc; font-size: 12px; }
-    .chat-msg { padding: 8px 12px; border-radius: 10px; max-width: 85%; }
-    .chat-msg.user { align-self: flex-end; background: var(--accent); color: white; }
-    .chat-msg.bot { align-self: flex-start; background: white; color: var(--text); border: 1px solid var(--border); }
-    .chat-input-area { display: flex; padding: 8px; background: white; border-top: 1px solid var(--border); gap: 4px; }
-    .chat-input-area input { flex: 1; padding: 6px 10px; border: 1px solid var(--border); border-radius: 6px; outline: none; font-size: 11px; }
-    .chat-input-area button { background: var(--accent); color: white; border: none; padding: 6px 12px; border-radius: 6px; cursor: pointer; font-weight: 700; font-size: 11px; }
+    /* Sticky Bottom Bar */
+    .cart-bar { position: absolute; bottom: 0; left: 0; right: 0; background: white; border-top: 1px solid var(--border); padding: 12px 16px; display: flex; justify-content: space-between; align-items: center; z-index: 40; }
+    .btn-checkout { background: var(--primary); color: white; border: none; padding: 10px 18px; border-radius: 10px; font-weight: 700; cursor: pointer; font-size: 12px; }
 
     .hidden { display: none !important; }
   </style>
@@ -114,185 +92,243 @@
   <div class="app-frame">
     <header>
       <div class="header-content">
-        <div class="logo-container">
-          <a href="https://www.bkalati.com" class="logo">🛒 بقالتي</a>
-          <span class="domain">www.bkalati.com</span>
-        </div>
+        <a href="#" class="logo">🛒 منصة بقالتي</a>
         <div class="role-switcher">
-          <button class="role-btn active" id="btn-cust" onclick="switchRole('customer')">الزبون</button>
-          <button class="role-btn" id="btn-merch" onclick="switchRole('merchant')">البقال</button>
+          <button class="role-btn active" id="btn-cust" onclick="switchRole('customer')">واجهة الزبون</button>
+          <button class="role-btn" id="btn-merch" onclick="switchRole('merchant')">لوحة البقال</button>
         </div>
       </div>
     </header>
 
     <div class="container">
-      <div class="support-bar">
-        <div class="support-item">
-          📱 <a href="https://wa.me/97459978290" target="_blank" class="phone-num">+974 5997 8290</a>
-        </div>
-        <div class="support-item">
-          ✉️ <a href="mailto:bkalati-help@bkalati.com">bkalati-help@bkalati.com</a>
-        </div>
-      </div>
-
-      <!-- Customer View -->
+      <!-- CUST VIEW -->
       <div id="customer-view">
-        <div class="store-card">
-          <div>
-            <h3 style="font-size: 15px; font-weight: 800;">بقالة الحي (البركة) 🏪</h3>
-            <p style="font-size: 11px; color: var(--text-muted); margin-top: 2px;">التوصيل: 10 دقائق | قطر</p>
-          </div>
-          <span class="badge-open">مفتوح الآن</span>
+        <div class="auth-banner" id="authBanner">
+          👤 لم تسجل دخولك بعد. <a href="#" onclick="openModal('loginModal')" style="color:var(--primary); font-weight:700;">اضغط هنا للتسجيل / الدخول</a>
         </div>
 
-        <div class="suggestions">
-          <button class="sug-btn" onclick="quickAsk('اقترح علي وجبة عشاء سريعة')">💡 اقتراح عشاء</button>
-          <button class="sug-btn" onclick="quickAsk('كيف أتواصل مع الدعم الفني؟')">📞 طرق التواصل</button>
+        <div class="card">
+          <h3 style="font-size:14px; font-weight:800;">بقالة البركة (قطر) 🏪</h3>
+          <p style="font-size:11px; color:var(--text-muted);">التوصيل المباشر خلال 10-20 دقيقة</p>
         </div>
 
-        <h4 style="font-size: 13px; font-weight: 700; margin-bottom: 10px;">منتجات مختارة</h4>
-
-        <div class="products-grid">
-          <div class="product-card">
-            <div class="img-wrapper">
-              <img src="https://images.pexels.com/photos/248412/pexels-photo-248412.jpeg?auto=compress&cs=tinysrgb&w=400" class="product-img" alt="حليب">
-            </div>
-            <div class="product-title">حليب طازج 1L</div>
-            <div class="product-price">6 ريال</div>
-            <button class="add-btn" onclick="addToCart('حليب طازج', 6)">إضافة للسلة</button>
-          </div>
-
-          <div class="product-card">
-            <div class="img-wrapper">
-              <img src="https://images.pexels.com/photos/1775043/pexels-photo-1775043.jpeg?auto=compress&cs=tinysrgb&w=400" class="product-img" alt="خبز">
-            </div>
-            <div class="product-title">خبز طازج</div>
-            <div class="product-price">2 ريال</div>
-            <button class="add-btn" onclick="addToCart('خبز طازج', 2)">إضافة للسلة</button>
-          </div>
-
-          <div class="product-card">
-            <div class="img-wrapper">
-              <img src="https://images.pexels.com/photos/162712/egg-white-egg-shell-broken-162712.jpeg?auto=compress&cs=tinysrgb&w=400" class="product-img" alt="بيض">
-            </div>
-            <div class="product-title">طبق بيض</div>
-            <div class="product-price">18 ريال</div>
-            <button class="add-btn" onclick="addToCart('طبق بيض', 18)">إضافة للسلة</button>
-          </div>
-
-          <div class="product-card">
-            <div class="img-wrapper">
-              <img src="https://images.pexels.com/photos/821365/pexels-photo-821365.jpeg?auto=compress&cs=tinysrgb&w=400" class="product-img" alt="جبنة">
-            </div>
-            <div class="product-title">جبنة بيضاء</div>
-            <div class="product-price">12 ريال</div>
-            <button class="add-btn" onclick="addToCart('جبنة بيضاء', 12)">إضافة للسلة</button>
-          </div>
-        </div>
+        <h4 style="font-size: 13px; margin-bottom: 10px;">المنتجات المتاحة</h4>
+        <div class="products-grid" id="productsGrid"></div>
       </div>
 
-      <!-- Merchant View -->
+      <!-- MERCHANT VIEW -->
       <div id="merchant-view" class="hidden">
-        <h3 style="margin-bottom: 12px; font-size: 14px; font-weight: 800;">طلبات الزبائن الحالية 📦</h3>
-        <div id="orders-list">
-          <div style="background: white; padding: 12px; border-radius: 12px; border-right: 4px solid var(--primary); box-shadow: var(--shadow);">
-            <strong style="font-size: 13px;">طلب #101 - أحمد</strong>
-            <p style="font-size: 12px; color: var(--text-muted); margin: 4px 0;">حليب طازج × 2 ، خبز × 1</p>
-            <span style="font-size: 11px; color: var(--primary); font-weight: 700;">الحالة: جاري التحضير 🛵</span>
+        <div class="card">
+          <h3 style="font-size:14px; font-weight:800; margin-bottom:8px;">إضافة منتج جديد للمتجر ➕</h3>
+          <div class="form-group">
+            <input type="text" id="newProdName" placeholder="اسم المنتج">
           </div>
+          <div class="form-group">
+            <input type="number" id="newProdPrice" placeholder="السعر (ر.ق)">
+          </div>
+          <button class="add-btn" onclick="addNewProduct()">إضافة المنتج فوراً</button>
         </div>
+
+        <h4 style="font-size:13px; margin: 15px 0 10px 0;">لوحة الطلبات الواردة 📦</h4>
+        <div id="merchantOrdersList"></div>
       </div>
     </div>
 
-    <!-- Floating Action Buttons Inside App Body -->
-    <div class="fab-container">
-      <a href="https://wa.me/97459978290?text=Hello,%20I%20need%20help%20on%20www.bkalati.com" target="_blank" class="whatsapp-fab">
-        💬 واتساب مباشر
-      </a>
-      <button class="gemini-fab" onclick="toggleChat()">✨ مساعد Gemini</button>
+    <!-- CART BAR -->
+    <div class="cart-bar" id="cartBar">
+      <div>
+        <span style="font-size:11px; color:var(--text-muted); display:block;">المجموع الكلي:</span>
+        <strong style="font-size:16px; color:var(--primary);"><span id="cartTotal">0</span> ر.ق</strong>
+      </div>
+      <button class="btn-checkout" onclick="proceedToCheckout()">إتمام الطلب والدفع 💳</button>
     </div>
-    
-    <!-- Chat Window -->
-    <div class="chat-window" id="chatWin">
-      <div class="chat-header">
-        <span id="chatTitle">✨ Gemini (مساعد الزبون)</span>
-        <span style="cursor:pointer;" onclick="toggleChat()">✖</span>
-      </div>
-      <div class="chat-messages" id="chatMsgs">
-        <div class="chat-msg bot" id="welcomeMsg">
-          أهلاً بك في www.bkalati.com! كيف يمكنني مساعدتك؟
-        </div>
-      </div>
-      <div class="chat-input-area">
-        <input type="text" id="userInput" placeholder="اكتب سؤالك..." onkeypress="if(event.key==='Enter') sendMsg()">
-        <button onclick="sendMsg()">إرسال</button>
-      </div>
-    </div>
+  </div>
 
-    <!-- Cart Floating Bar -->
-    <div class="cart-bar">
-      <div class="cart-info">الإجمالي: <span id="cartTotal">0</span> ريال</div>
-      <button class="checkout-btn" onclick="sendWhatsAppOrder()">تأكيد الطلب 💬</button>
+  <!-- LOGIN MODAL -->
+  <div class="modal" id="loginModal">
+    <div class="modal-content">
+      <h3 style="margin-bottom:12px; font-size:14px;">تسجيل الدخول / فتح حساب</h3>
+      <div class="form-group">
+        <label>الاسم الكامل</label>
+        <input type="text" id="userNameInput" placeholder="مثال: محمد المري">
+      </div>
+      <div class="form-group">
+        <label>رقم الهاتف (قطر)</label>
+        <input type="tel" id="userPhoneInput" placeholder="+974 5500 0000">
+      </div>
+      <button class="add-btn" style="padding:10px;" onclick="saveUser()">حفظ والدخول</button>
+    </div>
+  </div>
+
+  <!-- CHECKOUT MODAL -->
+  <div class="modal" id="checkoutModal">
+    <div class="modal-content">
+      <h3 style="margin-bottom:12px; font-size:14px;">بيانات التوصيل والدفع 🚚</h3>
+      <div class="form-group">
+        <label>عنوان التوصيل (المنطقة / الشارع / المنزل)</label>
+        <input type="text" id="deliveryAddress" placeholder="الريان، شارع 10، منزل 5">
+      </div>
+      <div class="form-group">
+        <label>طريقة الدفع</label>
+        <select id="paymentMethod">
+          <option value="الدفع عند الاستلام (كاش)">الدفع عند الاستلام (نقدًا)</option>
+          <option value="بطاقة ائتمانية (Online)">بطاقة ائتمانية / Visa / Mastercard</option>
+          <option value="Apple Pay">Apple Pay 📱</option>
+        </select>
+      </div>
+      <div class="card" style="background:#f8fafc; padding:10px; margin-bottom:12px;">
+        <div style="font-size:11px; font-weight:700;">ملخص السلة:</div>
+        <div id="checkoutSummary" style="font-size:11px; color:var(--text-muted); margin-top:4px;"></div>
+      </div>
+      <button class="add-btn" style="padding:12px; font-size:13px;" onclick="confirmOrder()">تأكيد وإرسال الطلب النهائي 🚀</button>
     </div>
   </div>
 
   <script>
-    let currentRole = 'customer';
-    let total = 0;
-    let cartItems = [];
+    // State Database (Local Storage Supported)
+    let products = [
+      { id: 1, name: "حليب طازج 1L", price: 6, img: "https://images.pexels.com/photos/248412/pexels-photo-248412.jpeg?auto=compress&cs=tinysrgb&w=400" },
+      { id: 2, name: "خبز عربي طازج", price: 2, img: "https://images.pexels.com/photos/1775043/pexels-photo-1775043.jpeg?auto=compress&cs=tinysrgb&w=400" },
+      { id: 3, name: "طبق بيض 30 حبة", price: 18, img: "https://images.pexels.com/photos/162712/egg-white-egg-shell-broken-162712.jpeg?auto=compress&cs=tinysrgb&w=400" },
+      { id: 4, name: "جبنة بيضاء", price: 12, img: "https://images.pexels.com/photos/821365/pexels-photo-821365.jpeg?auto=compress&cs=tinysrgb&w=400" }
+    ];
+
+    let cart = [];
+    let orders = [];
+    let currentUser = null;
+
+    // Init App
+    window.onload = function() {
+      renderProducts();
+      renderOrders();
+    };
+
+    function renderProducts() {
+      const grid = document.getElementById('productsGrid');
+      grid.innerHTML = products.map(p => `
+        <div class="product-card">
+          <div class="img-wrapper"><img src="${p.img}" class="product-img"></div>
+          <div class="product-title">${p.name}</div>
+          <div class="product-price">${p.price} ر.ق</div>
+          <button class="add-btn" onclick="addToCart('${p.name}', ${p.price})">إضافة للسلة</button>
+        </div>
+      `).join('');
+    }
 
     function addToCart(name, price) {
-      total += price;
-      cartItems.push({ name, price });
+      cart.push({ name, price });
+      updateCartTotal();
+    }
+
+    function updateCartTotal() {
+      const total = cart.reduce((sum, item) => sum + item.price, 0);
       document.getElementById('cartTotal').innerText = total;
     }
 
-    function sendWhatsAppOrder() {
-      if (cartItems.length === 0) {
-        alert("السلة فارغة، يرجى إضافة منتجات أولاً.");
-        return;
-      }
-      let summary = cartItems.map(i => `- ${i.name} (${i.price} ريال)`).join('%0A');
-      let url = `https://wa.me/97459978290?text=طلب%20جديد%20من%20www.bkalati.com:%0A${summary}%0A%0Aالإجمالي:%20${total}%20ريال`;
-      window.open(url, '_blank');
+    function openModal(id) { document.getElementById(id).style.display = 'flex'; }
+    function closeModal(id) { document.getElementById(id).style.display = 'none'; }
+
+    function saveUser() {
+      const name = document.getElementById('userNameInput').value;
+      const phone = document.getElementById('userPhoneInput').value;
+      if (!name || !phone) return alert("يرجى ملء كافة البيانات");
+      
+      currentUser = { name, phone };
+      document.getElementById('authBanner').innerHTML = `✅ مرحباً بك يا <strong>${name}</strong> (${phone})`;
+      closeModal('loginModal');
     }
 
-    function toggleChat() {
-      const win = document.getElementById('chatWin');
-      win.style.display = win.style.display === 'flex' ? 'none' : 'flex';
+    function proceedToCheckout() {
+      if (cart.length === 0) return alert("السلة فارغة!");
+      if (!currentUser) return openModal('loginModal');
+      
+      const summary = cart.map(i => `${i.name} (${i.price} ر.ق)`).join(', ');
+      document.getElementById('checkoutSummary').innerText = summary;
+      openModal('checkoutModal');
+    }
+
+    function confirmOrder() {
+      const address = document.getElementById('deliveryAddress').value;
+      const payMethod = document.getElementById('paymentMethod').value;
+      if (!address) return alert("يرجى كتابة عنوان التوصيل");
+
+      const total = cart.reduce((sum, item) => sum + item.price, 0);
+      const newOrder = {
+        id: Date.now().toString().slice(-4),
+        user: currentUser,
+        address: address,
+        items: [...cart],
+        total: total,
+        payment: payMethod,
+        status: 'جديد ⏳'
+      };
+
+      orders.unshift(newOrder);
+      cart = [];
+      updateCartTotal();
+      closeModal('checkoutModal');
+      renderOrders();
+      alert(`تم إرسال طلبك بنجاح! رقم الطلب #${newOrder.id}`);
+    }
+
+    function renderOrders() {
+      const list = document.getElementById('merchantOrdersList');
+      if (orders.length === 0) {
+        list.innerHTML = `<div style="text-align:center; font-size:12px; color:var(--text-muted); padding:20px;">لا توجد طلبات حالية</div>`;
+        return;
+      }
+
+      list.innerHTML = orders.map(o => `
+        <div class="order-card">
+          <div style="display:flex; justify-content:space-between; margin-bottom:6px;">
+            <strong>طلب #${o.id} - ${o.user.name}</strong>
+            <span class="status-badge status-new">${o.status}</span>
+          </div>
+          <div style="font-size:11px; color:var(--text-muted); margin-bottom:4px;">📱 ${o.user.phone} | 📍 ${o.address}</div>
+          <div style="font-size:11px; margin-bottom:6px;">📦 الأصناف: ${o.items.map(i=>i.name).join('، ')}</div>
+          <div style="font-size:12px; font-weight:700; color:var(--primary); display:flex; justify-content:space-between; align-items:center;">
+            <span>المجموع: ${o.total} ر.ق (${o.payment})</span>
+            <select style="font-size:10px; padding:2px;" onchange="updateOrderStatus('${o.id}', this.value)">
+              <option value="جديد ⏳">جديد</option>
+              <option value="جاري التحضير 👨‍🍳">تحضير</option>
+              <option value="في الطريق 🛵">توصيل</option>
+              <option value="مكتمل ✅">مكتمل</option>
+            </select>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function updateOrderStatus(id, newStatus) {
+      const order = orders.find(o => o.id === id);
+      if (order) order.status = newStatus;
+      renderOrders();
+    }
+
+    function addNewProduct() {
+      const name = document.getElementById('newProdName').value;
+      const price = parseFloat(document.getElementById('newProdPrice').value);
+      if (!name || !price) return alert("يرجى كتابة الاسم والسعر");
+
+      products.push({
+        id: Date.now(),
+        name: name,
+        price: price,
+        img: "https://images.pexels.com/photos/1002543/pexels-photo-1002543.jpeg?auto=compress&cs=tinysrgb&w=400"
+      });
+
+      document.getElementById('newProdName').value = '';
+      document.getElementById('newProdPrice').value = '';
+      renderProducts();
+      alert("تمت إضافة المنتج بنجاح إلى واجهة الزبون!");
     }
 
     function switchRole(role) {
-      currentRole = role;
       document.getElementById('btn-cust').classList.toggle('active', role === 'customer');
       document.getElementById('btn-merch').classList.toggle('active', role === 'merchant');
       document.getElementById('customer-view').classList.toggle('hidden', role !== 'customer');
       document.getElementById('merchant-view').classList.toggle('hidden', role !== 'merchant');
-    }
-
-    function quickAsk(text) {
-      toggleChat();
-      document.getElementById('userInput').value = text;
-      sendMsg();
-    }
-
-    function sendMsg() {
-      const input = document.getElementById('userInput');
-      const text = input.value.trim();
-      if (!text) return;
-
-      const msgs = document.getElementById('chatMsgs');
-      msgs.innerHTML += `<div class="chat-msg user">${text}</div>`;
-      input.value = '';
-
-      setTimeout(() => {
-        let reply = "🤖 يسعدني مساعدتك في طلباتك عبر منصة www.bkalati.com!";
-        if (text.includes("تواصل") || text.includes("دعم")) {
-          reply = "يمكنك التواصل معنا فوراً عبر الواتساب: +974 5997 8290 أو البريد bkalati-help@bkalati.com";
-        }
-        msgs.innerHTML += `<div class="chat-msg bot">${reply}</div>`;
-        msgs.scrollTop = msgs.scrollHeight;
-      }, 400);
+      document.getElementById('cartBar').style.display = role === 'customer' ? 'flex' : 'none';
     }
   </script>
 </body>
