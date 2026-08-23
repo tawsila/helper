@@ -1,513 +1,641 @@
-<!DOCTYPE html>
-<html lang="ar" dir="rtl">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>منصة بقالتي الاحترافية | Bkalati Pro</title>
-  <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
-  <style>
-    :root {
-      --primary: #059669;
-      --primary-hover: #047857;
-      --primary-light: #ecfdf5;
-      --burgundy: #800020;
-      --bg: #f8fafc;
-      --card-bg: #ffffff;
-      --text: #0f172a;
-      --text-muted: #64748b;
-      --border: #e2e8f0;
-      --shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.05);
+import 'package:flutter/material.dart';
+
+void main() {
+  runApp(const BkalatiApp());
+}
+
+class BkalatiApp extends StatelessWidget {
+  const BkalatiApp({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      title: 'بقالتي Pro',
+      debugShowCheckedModeBanner: false,
+      theme: ThemeData(
+        fontFamily: 'Tajawal',
+        primaryColor: const Color(0xFF059669),
+        scaffoldBackgroundColor: const Color(0xFFF8FAFC),
+        colorScheme: ColorScheme.fromSeed(
+          seedColor: const Color(0xFF059669),
+          primary: const Color(0xFF059669),
+          secondary: const Color(0xFF800020),
+        ),
+      ),
+      home: const MainHomeScreen(),
+    );
+  }
+}
+
+// Models
+class Product {
+  final int id;
+  final String name;
+  final String category;
+  final double price;
+  final String imageUrl;
+
+  Product({
+    required this.id,
+    required this.name,
+    required this.category,
+    required this.price,
+    required this.imageUrl,
+  });
+}
+
+class OrderItem {
+  final Product product;
+  final int quantity;
+
+  OrderItem({required this.product, required this.quantity});
+}
+
+class Order {
+  final String id;
+  final String customerName;
+  final String phone;
+  final String address;
+  final List<OrderItem> items;
+  final double total;
+  final String paymentMethod;
+  int statusStep; // 1: Received, 2: Preparing, 3: On standard delivery, 4: Delivered
+
+  Order({
+    required this.id,
+    required this.customerName,
+    required this.phone,
+    required this.address,
+    required this.items,
+    required this.total,
+    required this.paymentMethod,
+    this.statusStep = 1,
+  });
+}
+
+// Main Screen
+class MainHomeScreen extends StatefulWidget {
+  const MainHomeScreen({super.key});
+
+  @override
+  State<MainHomeScreen> createState() => _MainHomeScreenState();
+}
+
+class _MainHomeScreenState extends State<MainHomeScreen> {
+  int _currentRoleIndex = 0; // 0: Customer, 1: Merchant
+  String _selectedCategory = "الكل";
+  String _searchQuery = "";
+
+  // Dummy Initial Data
+  final List<Product> _products = [
+    Product(id: 1, name: "حليب طازج 1L", category: "ألبان ومخبوزات", price: 6.0, imageUrl: "https://via.placeholder.com/150"),
+    Product(id: 2, name: "خبز عربي طازج", category: "ألبان ومخبوزات", price: 2.0, imageUrl: "https://via.placeholder.com/150"),
+    Product(id: 3, name: "طبق بيض 30 حبة", category: "ألبان ومخبوزات", price: 18.0, imageUrl: "https://via.placeholder.com/150"),
+    Product(id: 4, name: "تفاح أحمر (1 كجم)", category: "خضار وفواكه", price: 8.0, imageUrl: "https://via.placeholder.com/150"),
+    Product(id: 5, name: "عصير برتقال طبيعي", category: "مشروبات", price: 7.0, imageUrl: "https://via.placeholder.com/150"),
+  ];
+
+  final Map<int, int> _cart = {}; // ProductId : Quantity
+  final List<Order> _orders = [];
+
+  String _userName = "";
+  String _userPhone = "";
+  Order? _activeLiveOrder;
+
+  // Controllers
+  final TextEditingController _nameController = TextEditingController();
+  final TextEditingController _phoneController = TextEditingController();
+  final TextEditingController _addressController = TextEditingController();
+  final TextEditingController _prodNameController = TextEditingController();
+  final TextEditingController _prodPriceController = TextEditingController();
+
+  double get _cartTotal {
+    double sum = 0;
+    _cart.forEach((id, qty) {
+      final p = _products.firstWhere((prod) => prod.id == id);
+      sum += p.price * qty;
+    });
+    return sum;
+  }
+
+  int get _cartCount {
+    int count = 0;
+    _cart.forEach((_, qty) => count += qty);
+    return count;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Directionality(
+      textDirection: TextDirection.rtl,
+      child: Scaffold(
+        appBar: AppBar(
+          backgroundColor: const Color(0xFF800020),
+          title: const Text('🛒 بقالتي Pro', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
+          actions: [
+            Container(
+              margin: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
+              decoration: BoxDecoration(
+                color: Colors.white.withOpacity(0.2),
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child: Row(
+                children: [
+                  _roleButton("الزبون", 0),
+                  _roleButton("البقال 📊", 1),
+                ],
+              ),
+            )
+          ],
+          bottom: _currentRoleIndex == 0
+              ? PreferredSize(
+                  preferredSize: const Size.fromHeight(60),
+                  child: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: TextField(
+                      onChanged: (v) => setState(() => _searchQuery = v),
+                      decoration: InputDecoration(
+                        hintText: "🔍 ابحث عن منتج (حليب، خضار...)",
+                        fillColor: Colors.white,
+                        filled: true,
+                        contentPadding: const EdgeInsets.symmetric(horizontal: 16),
+                        border: OutlineInputBorder(borderRadius: BorderRadius.circular(12), borderSide: BorderSide.none),
+                      ),
+                    ),
+                  ),
+                )
+              : null,
+        ),
+        body: _currentRoleIndex == 0 ? _buildCustomerView() : _buildMerchantView(),
+        bottomNavigationBar: _currentRoleIndex == 0 && _cart.isNotEmpty
+            ? Container(
+                padding: const EdgeInsets.all(16),
+                decoration: const BoxDecoration(
+                  color: Colors.white,
+                  boxShadow: [BoxShadow(color: Colors.black12, blurRadius: 10)],
+                ),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Column(
+                      mainAxisSize: MainAxisSize.min,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text('المجموع ($_cartCount عناصر):', style: const TextStyle(fontSize: 12, color: Colors.grey)),
+                        Text('${_cartTotal.toStringAsFixed(1)} ر.ق', style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Color(0xFF059669))),
+                      ],
+                    ),
+                    ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: const Color(0xFF059669),
+                        padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                      ),
+                      onPressed: _openCheckoutDialog,
+                      child: const Text('معاينة السلة 💳', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
+                    )
+                  ],
+                ),
+              )
+            : null,
+      ),
+    );
+  }
+
+  Widget _roleButton(String title, int index) {
+    bool selected = _currentRoleIndex == index;
+    return GestureDetector(
+      onTap: () => setState(() => _currentRoleIndex = index),
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+        decoration: BoxDecoration(
+          color: selected ? Colors.white : Colors.transparent,
+          borderRadius: BorderRadius.circular(10),
+        ),
+        child: Text(
+          title,
+          style: TextStyle(
+            color: selected ? const Color(0xFF800020) : Colors.white,
+            fontWeight: FontWeight.bold,
+            fontSize: 12,
+          ),
+        ),
+      ),
+    );
+  }
+
+  // --- CUSTOMER VIEW ---
+  Widget _buildCustomerView() {
+    final categories = ["الكل", "ألبان ومخبوزات", "خضار وفواكه", "مشروبات"];
+    final filteredProducts = _products.where((p) {
+      bool matchCat = _selectedCategory == "الكل" || p.category == _selectedCategory;
+      bool matchSearch = p.name.contains(_searchQuery);
+      return matchCat && matchSearch;
+    }).toList();
+
+    return SingleChildScrollView(
+      padding: const EdgeInsets.all(12),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // Auth Bar
+          Container(
+            padding: const EdgeInsets.all(12),
+            decoration: BoxDecoration(
+              color: const Color(0xFFECFDF5),
+              borderRadius: BorderRadius.circular(12),
+              border: Border.all(color: const Color(0xFF059669)),
+            ),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  _userName.isEmpty ? "👤 لم تسجل دخولك بعد" : "✅ أهلاً بك يا $_userName",
+                  style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 13),
+                ),
+                TextButton(
+                  onPressed: _openAuthDialog,
+                  child: Text(_userName.isEmpty ? "تسجيل الدخول" : "تعديل"),
+                )
+              ],
+            ),
+          ),
+          const SizedBox(height: 12),
+
+          // Live Tracker UI
+          if (_activeLiveOrder != null) _buildLiveTrackingCard(),
+
+          // Categories
+          SizedBox(
+            height: 40,
+            child: ListView.builder(
+              scrollDirection: Axis.horizontal,
+              itemCount: categories.length,
+              itemBuilder: (context, index) {
+                bool active = _selectedCategory == categories[index];
+                return Padding(
+                  padding: const EdgeInsets.only(left: 8),
+                  child: FilterChip(
+                    selected: active,
+                    label: Text(categories[index]),
+                    selectedColor: const Color(0xFF059669),
+                    labelStyle: TextStyle(color: active ? Colors.white : Colors.black),
+                    onSelected: (val) => setState(() => _selectedCategory = categories[index]),
+                  ),
+                );
+              },
+            ),
+          ),
+          const SizedBox(height: 12),
+
+          // Products Grid
+          GridView.builder(
+            shrinkWrap: true,
+            physics: const NeverScrollableScrollPhysics(),
+            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+              crossAxisCount: 2,
+              childAspectRatio: 0.75,
+              crossAxisSpacing: 10,
+              mainAxisSpacing: 10,
+            ),
+            itemCount: filteredProducts.length,
+            itemBuilder: (context, index) {
+              final prod = filteredProducts[index];
+              final qty = _cart[prod.id] ?? 0;
+              return Card(
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Expanded(
+                        child: Container(
+                          width: double.infinity,
+                          decoration: BoxDecoration(
+                            color: Colors.grey[200],
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          child: const Icon(Icons.shopping_bag, size: 40, color: Colors.grey),
+                        ),
+                      ),
+                      const SizedBox(height: 6),
+                      Text(prod.category, style: const TextStyle(fontSize: 10, color: Colors.grey)),
+                      Text(prod.name, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 13)),
+                      Text('${prod.price} ر.ق', style: const TextStyle(color: Color(0xFF059669), fontWeight: FontWeight.bold)),
+                      const SizedBox(height: 6),
+                      // Qty Counter
+                      Container(
+                        decoration: BoxDecoration(color: Colors.grey[100], borderRadius: BorderRadius.circular(8)),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            IconButton(
+                              icon: const Icon(Icons.remove, size: 16),
+                              onPressed: () {
+                                setState(() {
+                                  if (_cart.containsKey(prod.id)) {
+                                    if (_cart[prod.id]! > 1) {
+                                      _cart[prod.id] = _cart[prod.id]! - 1;
+                                    } else {
+                                      _cart.remove(prod.id);
+                                    }
+                                  }
+                                });
+                              },
+                            ),
+                            Text('$qty', style: const TextStyle(fontWeight: FontWeight.bold)),
+                            IconButton(
+                              icon: const Icon(Icons.add, size: 16),
+                              onPressed: () {
+                                setState(() {
+                                  _cart[prod.id] = (_cart[prod.id] ?? 0) + 1;
+                                });
+                              },
+                            ),
+                          ],
+                        ),
+                      )
+                    ],
+                  ),
+                ),
+              );
+            },
+          )
+        ],
+      ),
+    );
+  }
+
+  // --- LIVE TRACKING CARD ---
+  Widget _buildLiveTrackingCard() {
+    int step = _activeLiveOrder!.statusStep;
+    return Card(
+      color: Colors.white,
+      shape: RoundedRectangleBorder(
+        side: const BorderSide(color: Color(0xFF059669)),
+        borderRadius: BorderRadius.circular(16),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.all(12.0),
+        child: Column(
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                const Text("تتبع طلبك المباشر 🛵", style: TextStyle(fontWeight: FontWeight.bold)),
+                Text('#${_activeLiveOrder!.id}', style: const TextStyle(color: Colors.grey, fontSize: 12)),
+              ],
+            ),
+            const SizedBox(height: 12),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: [
+                _stepText("1. تم الاستلام", step >= 1),
+                _stepText("2. التحضير", step >= 2),
+                _stepText("3. الطريق", step >= 3),
+                _stepText("4. التسليم", step >= 4),
+              ],
+            ),
+            const SizedBox(height: 12),
+            // Map Placeholder
+            Container(
+              height: 80,
+              width: double.infinity,
+              decoration: BoxDecoration(
+                color: Colors.grey[200],
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child: Stack(
+                children: [
+                  const Positioned(right: 10, top: 25, child: Text("🏪", style: TextStyle(fontSize: 24))),
+                  AnimatedPositioned(
+                    duration: const Duration(seconds: 1),
+                    right: step == 1 ? 40 : (step == 2 ? 100 : (step == 3 ? 180 : 260)),
+                    top: 25,
+                    child: const Text("🛵", style: TextStyle(fontSize: 24)),
+                  ),
+                  const Positioned(left: 10, top: 25, child: Text("🏠", style: TextStyle(fontSize: 24))),
+                ],
+              ),
+            )
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _stepText(String title, bool active) {
+    return Text(
+      title,
+      style: TextStyle(
+        fontSize: 10,
+        fontWeight: active ? FontWeight.bold : FontWeight.normal,
+        color: active ? const Color(0xFF059669) : Colors.grey,
+      ),
+    );
+  }
+
+  // --- MERCHANT DASHBOARD VIEW ---
+  Widget _buildMerchantView() {
+    double totalRevenue = _orders.fold(0, (sum, item) => sum + item.total);
+    int activeOrders = _orders.where((o) => o.statusStep < 4).length;
+
+    return SingleChildScrollView(
+      padding: const EdgeInsets.all(12),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const Text('لوحة متابعة البقالة والتوصيل 📊', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
+          const SizedBox(height: 10),
+          Row(
+            children: [
+              _statCard('إجمالي الطلبات', '${_orders.length}'),
+              _statCard('المبيعات', '${totalRevenue.toStringAsFixed(0)} ر.ق'),
+              _statCard('نشطة', '$activeOrders'),
+            ],
+          ),
+          const SizedBox(height: 16),
+
+          // Add Product Form
+          Card(
+            child: Padding(
+              padding: const EdgeInsets.all(12.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const Text('إضافة صنف جديد ➕', style: TextStyle(fontWeight: FontWeight.bold)),
+                  const SizedBox(height: 8),
+                  TextField(controller: _prodNameController, decoration: const InputDecoration(labelText: 'اسم المنتج')),
+                  TextField(controller: _prodPriceController, keyboardType: TextInputType.number, decoration: const InputDecoration(labelText: 'السعر')),
+                  const SizedBox(height: 10),
+                  ElevatedButton(
+                    onPressed: () {
+                      if (_prodNameController.text.isNotEmpty && _prodPriceController.text.isNotEmpty) {
+                        setState(() {
+                          _products.insert(
+                            0,
+                            Product(
+                              id: DateTime.now().millisecondsSinceEpoch,
+                              name: _prodNameController.text,
+                              category: "سوبرماركت",
+                              price: double.parse(_prodPriceController.text),
+                              imageUrl: "https://via.placeholder.com/150",
+                            ),
+                          );
+                          _prodNameController.clear();
+                          _prodPriceController.clear();
+                        });
+                      }
+                    },
+                    child: const Text('نشر المنتج'),
+                  )
+                ],
+              ),
+            ),
+          ),
+          const SizedBox(height: 16),
+
+          // Orders List
+          const Text('إدارة الطلبات الواردة 📦', style: TextStyle(fontWeight: FontWeight.bold)),
+          const SizedBox(height: 8),
+          _orders.isEmpty
+              ? const Center(child: Text('لا توجد طلبات بعد'))
+              : ListView.builder(
+                  shrinkWrap: true,
+                  physics: const NeverScrollableScrollPhysics(),
+                  itemCount: _orders.length,
+                  itemBuilder: (context, index) {
+                    final order = _orders[index];
+                    return Card(
+                      child: ListTile(
+                        title: Text('طلب #${order.id} - ${order.customerName}'),
+                        subtitle: Text('${order.address} | ${order.total} ر.ق'),
+                        trailing: DropdownButton<int>(
+                          value: order.statusStep,
+                          items: const [
+                            DropdownMenuItem(value: 1, child: Text('1. استلام')),
+                            DropdownMenuItem(value: 2, child: Text('2. تحضير')),
+                            DropdownMenuItem(value: 3, child: Text('3. طريق')),
+                            DropdownMenuItem(value: 4, child: Text('4. تسليم')),
+                          ],
+                          onChanged: (val) {
+                            if (val != null) {
+                              setState(() {
+                                order.statusStep = val;
+                                if (_activeLiveOrder?.id == order.id) {
+                                  _activeLiveOrder!.statusStep = val;
+                                }
+                              });
+                            }
+                          },
+                        ),
+                      ),
+                    );
+                  },
+                )
+        ],
+      ),
+    );
+  }
+
+  Widget _statCard(String label, String value) {
+    return Expanded(
+      child: Card(
+        child: Padding(
+          padding: const EdgeInsets.symmetric(vertical: 12),
+          child: Column(
+            children: [
+              Text(value, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16, color: Color(0xFF800020))),
+              Text(label, style: const TextStyle(fontSize: 10, color: Colors.grey)),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  // --- DIALOGS ---
+  void _openAuthDialog() {
+    showDialog(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: const Text('تسجيل دخول الزبون'),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            TextField(controller: _nameController, decoration: const InputDecoration(labelText: 'الاسم')),
+            TextField(controller: _phoneController, decoration: const InputDecoration(labelText: 'رقم الجوال')),
+          ],
+        ),
+        actions: [
+          TextButton(
+            onPressed: () {
+              setState(() {
+                _userName = _nameController.text;
+                _userPhone = _phoneController.text;
+              });
+              Navigator.pop(ctx);
+            },
+            child: const Text('حفظ'),
+          )
+        ],
+      ),
+    );
+  }
+
+  void _openCheckoutDialog() {
+    if (_userName.isEmpty) {
+      _openAuthDialog();
+      return;
     }
 
-    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Tajawal', sans-serif; }
-    body { background-color: #cbd5e1; color: var(--text); display: flex; justify-content: center; min-height: 100vh; padding: 10px 0; }
-    
-    .app-frame {
-      width: 100%;
-      max-width: 480px;
-      background-color: var(--bg);
-      min-height: 95vh;
-      position: relative;
-      box-shadow: 0 12px 35px rgba(0,0,0,0.15);
-      border-radius: 28px;
-      overflow: hidden;
-      display: flex;
-      flex-direction: column;
-      padding-bottom: 95px;
-    }
+    showDialog(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: const Text('إتمام الطلب والدفع'),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            TextField(controller: _addressController, decoration: const InputDecoration(labelText: 'عنوان التوصيل (المنطقة/الشارع)')),
+            const SizedBox(height: 12),
+            Text('الإجمالي: ${_cartTotal.toStringAsFixed(1)} ر.ق', style: const TextStyle(fontWeight: FontWeight.bold, color: Color(0xFF059669))),
+          ],
+        ),
+        actions: [
+          ElevatedButton(
+            onPressed: () {
+              if (_addressController.text.isNotEmpty) {
+                List<OrderItem> items = [];
+                _cart.forEach((id, qty) {
+                  final p = _products.firstWhere((prod) => prod.id == id);
+                  items.add(OrderItem(product: p, quantity: qty));
+                });
 
-    /* Header */
-    header {
-      background: linear-gradient(135deg, var(--burgundy) 0%, #4a0012 100%);
-      color: white;
-      padding: 16px 18px 12px 18px;
-      position: sticky;
-      top: 0;
-      z-index: 50;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-    }
-    .header-content { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
-    .logo { font-size: 19px; font-weight: 800; color: white; text-decoration: none; }
-    .role-switcher { display: flex; gap: 4px; background: rgba(255, 255, 255, 0.18); padding: 3px; border-radius: 16px; }
-    .role-btn { border: none; background: transparent; color: white; padding: 6px 12px; border-radius: 12px; cursor: pointer; font-size: 11px; font-weight: 700; transition: 0.2s; }
-    .role-btn.active { background: white; color: var(--burgundy); box-shadow: 0 2px 6px rgba(0,0,0,0.1); }
+                final newOrder = Order(
+                  id: DateTime.now().millisecondsSinceEpoch.toString().substring(8),
+                  customerName: _userName,
+                  phone: _userPhone,
+                  address: _addressController.text,
+                  items: items,
+                  total: _cartTotal,
+                  paymentMethod: 'الدفع عند الاستلام',
+                );
 
-    .search-box { width: 100%; position: relative; }
-    .search-box input { width: 100%; padding: 9px 14px; border-radius: 12px; border: none; font-size: 12px; outline: none; background: rgba(255,255,255,0.95); }
+                setState(() {
+                  _orders.insert(0, newOrder);
+                  _activeLiveOrder = newOrder;
+                  _cart.clear();
+                  _addressController.clear();
+                });
 
-    .container { padding: 14px; flex: 1; overflow-y: auto; }
-
-    /* Categories Horizontal Scroll */
-    .categories { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 10px; scrollbar-width: none; margin-bottom: 10px; }
-    .categories::-webkit-scrollbar { display: none; }
-    .cat-btn { background: white; border: 1px solid var(--border); padding: 7px 14px; border-radius: 20px; font-size: 11px; font-weight: 700; white-space: nowrap; cursor: pointer; color: var(--text-muted); transition: 0.2s; }
-    .cat-btn.active { background: var(--primary); color: white; border-color: var(--primary); }
-
-    /* Products Grid */
-    .products-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
-    .product-card { background: var(--card-bg); border-radius: 16px; padding: 10px; border: 1px solid var(--border); box-shadow: var(--shadow); display: flex; flex-direction: column; justify-content: space-between; position: relative; }
-    .img-wrapper { width: 100%; height: 110px; border-radius: 12px; overflow: hidden; background: #f1f5f9; margin-bottom: 8px; }
-    .product-img { width: 100%; height: 100%; object-fit: cover; }
-    .product-cat { font-size: 9px; color: var(--text-muted); font-weight: 700; }
-    .product-title { font-weight: 700; font-size: 13px; color: var(--text); margin-top: 2px; }
-    .product-price { color: var(--primary); font-weight: 800; font-size: 13px; margin: 4px 0 8px 0; }
-    
-    /* Quantity Counter Buttons */
-    .qty-controls { display: flex; align-items: center; justify-content: space-between; background: #f1f5f9; border-radius: 10px; padding: 2px; }
-    .qty-btn { background: white; border: 1px solid var(--border); width: 26px; height: 26px; border-radius: 8px; font-weight: 800; font-size: 14px; cursor: pointer; color: var(--text); display: flex; align-items: center; justify-content: center; }
-    .qty-num { font-size: 12px; font-weight: 800; color: var(--text); padding: 0 6px; }
-
-    /* Tracking Box & Live Map */
-    .tracking-card { background: white; border-radius: 16px; padding: 14px; margin-bottom: 14px; border: 1px solid var(--primary); box-shadow: var(--shadow); }
-    .map-box { width: 100%; height: 130px; background: #e2e8f0; border-radius: 12px; position: relative; overflow: hidden; margin-top: 10px; background-image: radial-gradient(#cbd5e1 1px, transparent 0); background-size: 12px 12px; }
-    .driver-pin { position: absolute; font-size: 24px; top: 40px; transition: all 1.2s ease-in-out; }
-    .home-pin { position: absolute; left: 16px; top: 40px; font-size: 24px; }
-    .store-pin { position: absolute; right: 16px; top: 40px; font-size: 24px; }
-    
-    .step-bar { display: flex; justify-content: space-between; margin-top: 10px; position: relative; }
-    .step-item { font-size: 10px; font-weight: 700; color: var(--text-muted); text-align: center; z-index: 2; }
-    .step-item.active { color: var(--primary); font-weight: 800; }
-
-    /* Merchant Dashboard UI */
-    .stats-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 14px; }
-    .stat-card { background: white; padding: 12px 8px; border-radius: 14px; border: 1px solid var(--border); text-align: center; }
-    .stat-number { font-weight: 800; font-size: 16px; color: var(--burgundy); }
-    .stat-label { font-size: 10px; color: var(--text-muted); margin-top: 2px; }
-
-    .order-card { background: white; border: 1px solid var(--border); border-radius: 14px; padding: 12px; margin-bottom: 10px; box-shadow: var(--shadow); }
-
-    /* Modals */
-    .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 200; justify-content: center; align-items: flex-end; }
-    .modal-content { background: white; width: 100%; max-width: 480px; border-radius: 24px 24px 0 0; padding: 20px; max-height: 85vh; overflow-y: auto; }
-    .form-group { margin-bottom: 12px; }
-    .form-group label { display: block; font-size: 11px; font-weight: 700; margin-bottom: 4px; color: var(--text-muted); }
-    .form-group input, .form-group select { width: 100%; padding: 10px; border: 1px solid var(--border); border-radius: 10px; font-size: 12px; outline: none; }
-
-    /* Sticky Cart Footer */
-    .cart-bar { position: absolute; bottom: 0; left: 0; right: 0; background: white; border-top: 1px solid var(--border); padding: 12px 18px; display: flex; justify-content: space-between; align-items: center; z-index: 40; box-shadow: 0 -4px 20px rgba(0,0,0,0.05); }
-    .btn-checkout { background: var(--primary); color: white; border: none; padding: 10px 20px; border-radius: 12px; font-weight: 700; cursor: pointer; font-size: 12px; }
-
-    .btn-action { background: var(--primary); color: white; border: none; padding: 10px; border-radius: 10px; font-weight: 700; width: 100%; cursor: pointer; font-size: 12px; }
-    .hidden { display: none !important; }
-  </style>
-</head>
-<body>
-
-  <div class="app-frame">
-    <header>
-      <div class="header-content">
-        <a href="#" class="logo">🛒 منصة بقالتي Pro</a>
-        <div class="role-switcher">
-          <button class="role-btn active" id="btn-cust" onclick="switchRole('customer')">واجهة الزبون</button>
-          <button class="role-btn" id="btn-merch" onclick="switchRole('merchant')">لوحة البقال 📊</button>
-        </div>
-      </div>
-      <div class="search-box" id="searchContainer">
-        <input type="text" id="searchInput" placeholder="🔍 ابحث عن أي منتج (حليب، خبز، خضار...)" oninput="filterProducts()">
-      </div>
-    </header>
-
-    <div class="container">
-      <!-- CUSTOMER INTERFACE -->
-      <div id="customer-view">
-        
-        <!-- Login Banner -->
-        <div id="authBanner" style="background: var(--primary-light); border: 1px dashed var(--primary); text-align: center; font-size: 12px; padding: 10px; border-radius: 12px; margin-bottom: 12px;">
-          👤 لم تسجل دخولك بعد. <a href="#" onclick="openModal('loginModal')" style="color:var(--primary); font-weight:700;">اضغط هنا للتسجيل / الدخول</a>
-        </div>
-
-        <!-- Live Order Tracking Component -->
-        <div id="trackingSection" class="tracking-card hidden">
-          <div style="display:flex; justify-content:space-between; align-items:center;">
-            <h4 style="font-size:13px; font-weight:800;">حالة طلبك المباشر 🛵</h4>
-            <span id="orderIdTag" style="font-size:10px; background:#f1f5f9; padding:3px 8px; border-radius:10px; font-weight:700;">#0000</span>
-          </div>
-          
-          <div class="step-bar">
-            <span class="step-item active" id="step1">1. تم الاستلام</span>
-            <span class="step-item" id="step2">2. جاري التحضير</span>
-            <span class="step-item" id="step3">3. في الطريق</span>
-            <span class="step-item" id="step4">4. تم التسليم</span>
-          </div>
-
-          <div class="map-box">
-            <span class="store-pin" title="البقالة">🏪</span>
-            <span class="driver-pin" id="driverPin" style="right: 30px;">🛵</span>
-            <span class="home-pin" title="منزلك">🏠</span>
-          </div>
-        </div>
-
-        <!-- Categories horizontal bar -->
-        <div class="categories">
-          <button class="cat-btn active" onclick="selectCategory('الكل', this)">جميع المنتجات</button>
-          <button class="cat-btn" onclick="selectCategory('ألبان ومخبوزات', this)">🥛 ألبان ومخبوزات</button>
-          <button class="cat-btn" onclick="selectCategory('خضروات وفواكه', this)">🍎 خضار وفواكه</button>
-          <button class="cat-btn" onclick="selectCategory('مشروبات', this)">🧃 مشروبات</button>
-          <button class="cat-btn" onclick="selectCategory('سوبرماركت', this)">🍫 أطعمة وسناك</button>
-        </div>
-
-        <!-- Products List Grid -->
-        <div class="products-grid" id="productsGrid"></div>
-      </div>
-
-      <!-- MERCHANT DASHBOARD INTERFACE -->
-      <div id="merchant-view" class="hidden">
-        <h3 style="font-size:15px; font-weight:800; margin-bottom:12px;">لوحة متابعة البقالة والتوصيل 📊</h3>
-
-        <!-- Dashboard Analytics -->
-        <div class="stats-grid">
-          <div class="stat-card">
-            <div class="stat-number" id="statOrdersCount">0</div>
-            <div class="stat-label">إجمالي الطلبات</div>
-          </div>
-          <div class="stat-card">
-            <div class="stat-number" id="statRevenue">0 ر.ق</div>
-            <div class="stat-label">إجمالي المبيعات</div>
-          </div>
-          <div class="stat-card">
-            <div class="stat-number" id="statActive">0</div>
-            <div class="stat-label">طلبات نشطة</div>
-          </div>
-        </div>
-
-        <!-- Add New Product Form -->
-        <div style="background:white; border-radius:16px; padding:14px; border:1px solid var(--border); margin-bottom:14px;">
-          <h4 style="font-size:13px; font-weight:800; margin-bottom:10px;">إضافة صنف جديد للمتجر ➕</h4>
-          <div class="form-group">
-            <input type="text" id="newProdName" placeholder="اسم المنتج (مثال: عصير برتقال)">
-          </div>
-          <div class="form-group" style="display:flex; gap:8px;">
-            <input type="number" id="newProdPrice" placeholder="السعر (ر.ق)">
-            <select id="newProdCat">
-              <option value="ألبان ومخبوزات">ألبان ومخبوزات</option>
-              <option value="خضروات وفواكه">خضار وفواكه</option>
-              <option value="مشروبات">مشروبات</option>
-              <option value="سوبرماركت">سوبرماركت</option>
-            </select>
-          </div>
-          <button class="btn-action" onclick="addNewProduct()">حفظ ونشر المنتج</button>
-        </div>
-
-        <!-- Customer Orders Control -->
-        <h4 style="font-size:13px; font-weight:800; margin-bottom:10px;">إدارة وحالات الطلبات الواردة 📦</h4>
-        <div id="merchantOrdersList"></div>
-      </div>
-    </div>
-
-    <!-- STICKY CART FOOTER BAR -->
-    <div class="cart-bar" id="cartBar">
-      <div>
-        <span style="font-size:10px; color:var(--text-muted); display:block;">المجموع (<span id="cartCount">0</span> عناصر):</span>
-        <strong style="font-size:16px; color:var(--primary);"><span id="cartTotal">0</span> ر.ق</strong>
-      </div>
-      <button class="btn-checkout" onclick="proceedToCheckout()">معاينة السلة والدفع 💳</button>
-    </div>
-  </div>
-
-  <!-- USER LOGIN MODAL -->
-  <div class="modal" id="loginModal">
-    <div class="modal-content">
-      <h3 style="margin-bottom:12px; font-size:14px; font-weight:800;">تسجيل حساب جديد / دخول</h3>
-      <div class="form-group">
-        <label>الاسم الكامل</label>
-        <input type="text" id="userNameInput" placeholder="أدخل اسمك الكريم">
-      </div>
-      <div class="form-group">
-        <label>رقم الجوال (قطر)</label>
-        <input type="tel" id="userPhoneInput" placeholder="+974 5500 0000">
-      </div>
-      <button class="btn-action" onclick="saveUser()">حفظ واستمرار</button>
-    </div>
-  </div>
-
-  <!-- CHECKOUT & PAYMENT MODAL -->
-  <div class="modal" id="checkoutModal">
-    <div class="modal-content">
-      <h3 style="margin-bottom:12px; font-size:14px; font-weight:800;">تفاصيل التوصيل والدفع 🚚</h3>
-      <div class="form-group">
-        <label>عنوان الاستلام المفصل</label>
-        <input type="text" id="deliveryAddress" placeholder="اسم المنطقة / الشارع / رقم المنزل">
-      </div>
-      <div class="form-group">
-        <label>اختر طريقة الدفع</label>
-        <select id="paymentMethod">
-          <option value="الدفع عند الاستلام (نقدًا)">الدفع عند الاستلام (نقدًا / كاش)</option>
-          <option value="بطاقة بنكية (Visa/Mastercard)">بطاقة بنكية (Visa / Mastercard)</option>
-          <option value="Apple Pay 📱">Apple Pay 📱</option>
-        </select>
-      </div>
-      
-      <div style="background:#f8fafc; border-radius:12px; padding:10px; margin-bottom:12px; border:1px solid var(--border);">
-        <div style="font-size:11px; font-weight:800; margin-bottom:4px;">ملخص الأصناف بالسلة:</div>
-        <div id="checkoutSummaryList" style="font-size:11px; color:var(--text-muted); max-height:100px; overflow-y:auto;"></div>
-      </div>
-
-      <button class="btn-action" style="padding:12px; font-size:13px;" onclick="confirmOrder()">إرسال الطلب للبقالة 🚀</button>
-    </div>
-  </div>
-
-  <script>
-    // Rich Store Product Catalog
-    let products = [
-      { id: 1, name: "حليب طازج 1L", category: "ألبان ومخبوزات", price: 6, img: "https://images.pexels.com/photos/248412/pexels-photo-248412.jpeg?auto=compress&cs=tinysrgb&w=400" },
-      { id: 2, name: "خبز عربي طازج", category: "ألبان ومخبوزات", price: 2, img: "https://images.pexels.com/photos/1775043/pexels-photo-1775043.jpeg?auto=compress&cs=tinysrgb&w=400" },
-      { id: 3, name: "طبق بيض 30 حبة", category: "ألبان ومخبوزات", price: 18, img: "https://images.pexels.com/photos/162712/egg-white-egg-shell-broken-162712.jpeg?auto=compress&cs=tinysrgb&w=400" },
-      { id: 4, name: "تفاح أحمر طازج (1 كجم)", category: "خضروات وفواكه", price: 8, img: "https://images.pexels.com/photos/102104/pexels-photo-102104.jpeg?auto=compress&cs=tinysrgb&w=400" },
-      { id: 5, name: "موز طازج (1 كجم)", category: "خضروات وفواكه", price: 5, img: "https://images.pexels.com/photos/2238309/pexels-photo-2238309.jpeg?auto=compress&cs=tinysrgb&w=400" },
-      { id: 6, name: "عصير برتقال طبيعي", category: "مشروبات", price: 7, img: "https://images.pexels.com/photos/1337825/pexels-photo-1337825.jpeg?auto=compress&cs=tinysrgb&w=400" },
-      { id: 7, name: "ماء نقي (عبوة 6 حبات)", category: "مشروبات", price: 10, img: "https://images.pexels.com/photos/416528/pexels-photo-416528.jpeg?auto=compress&cs=tinysrgb&w=400" },
-      { id: 8, name: "شوكولاتة فاخرة", category: "سوبرماركت", price: 4, img: "https://images.pexels.com/photos/65882/chocolate-dark-coffee-nut-65882.jpeg?auto=compress&cs=tinysrgb&w=400" }
-    ];
-
-    let cart = {}; // Object format { productId: quantity }
-    let orders = [];
-    let currentUser = null;
-    let selectedCat = "الكل";
-
-    window.onload = function() {
-      renderProducts();
-      renderOrders();
-    };
-
-    function renderProducts() {
-      const grid = document.getElementById('productsGrid');
-      const search = document.getElementById('searchInput').value.toLowerCase();
-
-      const filtered = products.filter(p => {
-        const matchesCat = selectedCat === "الكل" || p.category === selectedCat;
-        const matchesSearch = p.name.toLowerCase().includes(search);
-        return matchesCat && matchesSearch;
-      });
-
-      grid.innerHTML = filtered.map(p => {
-        const qty = cart[p.id] || 0;
-        return `
-          <div class="product-card">
-            <div class="img-wrapper"><img src="${p.img}" class="product-img"></div>
-            <span class="product-cat">${p.category}</span>
-            <div class="product-title">${p.name}</div>
-            <div class="product-price">${p.price} ر.ق</div>
-            <div class="qty-controls">
-              <button class="qty-btn" onclick="updateQty(${p.id}, -1)">-</button>
-              <span class="qty-num">${qty}</span>
-              <button class="qty-btn" onclick="updateQty(${p.id}, 1)">+</button>
-            </div>
-          </div>
-        `;
-      }).join('');
-    }
-
-    function updateQty(id, change) {
-      if (!cart[id]) cart[id] = 0;
-      cart[id] += change;
-      if (cart[id] <= 0) delete cart[id];
-      renderProducts();
-      updateCartSummary();
-    }
-
-    function updateCartSummary() {
-      let total = 0;
-      let count = 0;
-      for (let id in cart) {
-        const prod = products.find(p => p.id == id);
-        if (prod) {
-          total += prod.price * cart[id];
-          count += cart[id];
-        }
-      }
-      document.getElementById('cartTotal').innerText = total;
-      document.getElementById('cartCount').innerText = count;
-    }
-
-    function selectCategory(catName, btn) {
-      selectedCat = catName;
-      document.querySelectorAll('.cat-btn').forEach(b => b.classList.remove('active'));
-      btn.classList.add('active');
-      renderProducts();
-    }
-
-    function filterProducts() {
-      renderProducts();
-    }
-
-    function openModal(id) { document.getElementById(id).style.display = 'flex'; }
-    function closeModal(id) { document.getElementById(id).style.display = 'none'; }
-
-    function saveUser() {
-      const name = document.getElementById('userNameInput').value;
-      const phone = document.getElementById('userPhoneInput').value;
-      if (!name || !phone) return alert("يرجى ملء كافة البيانات المطلوب");
-      
-      currentUser = { name, phone };
-      document.getElementById('authBanner').innerHTML = `✅ أهلاً بك يا <strong>${name}</strong> (${phone})`;
-      closeModal('loginModal');
-    }
-
-    function proceedToCheckout() {
-      if (Object.keys(cart).length === 0) return alert("السلة فارغة! يرجى إضافة منتجات أولاً.");
-      if (!currentUser) return openModal('loginModal');
-
-      let listHtml = "";
-      for (let id in cart) {
-        const p = products.find(prod => prod.id == id);
-        listHtml += `<div>• ${p.name} × ${cart[id]} = ${p.price * cart[id]} ر.ق</div>`;
-      }
-      document.getElementById('checkoutSummaryList').innerHTML = listHtml;
-      openModal('checkoutModal');
-    }
-
-    function confirmOrder() {
-      const address = document.getElementById('deliveryAddress').value;
-      const payMethod = document.getElementById('paymentMethod').value;
-      if (!address) return alert("يرجى إدخال عنوان التوصيل المفصل");
-
-      let orderItems = [];
-      let total = 0;
-      for (let id in cart) {
-        const p = products.find(prod => prod.id == id);
-        orderItems.push({ name: p.name, qty: cart[id], price: p.price });
-        total += p.price * cart[id];
-      }
-
-      const newOrder = {
-        id: Date.now().toString().slice(-4),
-        user: currentUser,
-        address: address,
-        items: orderItems,
-        total: total,
-        payment: payMethod,
-        statusStep: 1, // 1: Recv, 2: Prep, 3: OnWay, 4: Delivered
-        statusText: "تم استلام الطلب ⏳"
-      };
-
-      orders.unshift(newOrder);
-      cart = {};
-      updateCartSummary();
-      renderProducts();
-      closeModal('checkoutModal');
-      renderOrders();
-      showCustomerTracking(newOrder);
-      alert(`تم إرسال طلبك بنجاح للخدمة! رقم الطلب #${newOrder.id}`);
-    }
-
-    function showCustomerTracking(order) {
-      const trackSec = document.getElementById('trackingSection');
-      trackSec.classList.remove('hidden');
-      document.getElementById('orderIdTag').innerText = `#${order.id}`;
-
-      // Steps Highlight
-      for (let i = 1; i <= 4; i++) {
-        const el = document.getElementById(`step${i}`);
-        if (i <= order.statusStep) el.classList.add('active');
-        else el.classList.remove('active');
-      }
-
-      // Move Driver Pin on Map
-      const pin = document.getElementById('driverPin');
-      if (order.statusStep === 1) pin.style.right = '40px';
-      if (order.statusStep === 2) pin.style.right = '120px';
-      if (order.statusStep === 3) pin.style.right = '240px';
-      if (order.statusStep === 4) pin.style.right = '340px';
-    }
-
-    function renderOrders() {
-      const list = document.getElementById('merchantOrdersList');
-      
-      // Update Analytics
-      document.getElementById('statOrdersCount').innerText = orders.length;
-      document.getElementById('statRevenue').innerText = orders.reduce((s,o)=>s+o.total,0) + ' ر.ق';
-      document.getElementById('statActive').innerText = orders.filter(o=>o.statusStep < 4).length;
-
-      if (orders.length === 0) {
-        list.innerHTML = `<div style="text-align:center; font-size:12px; color:var(--text-muted); padding:20px;">لا توجد طلبات جديدة بعد</div>`;
-        return;
-      }
-
-      list.innerHTML = orders.map(o => `
-        <div class="order-card">
-          <div style="display:flex; justify-content:space-between; margin-bottom:6px;">
-            <strong>طلب #${o.id} - ${o.user.name}</strong>
-            <span style="font-size:10px; font-weight:800; color:var(--primary);">${o.statusText}</span>
-          </div>
-          <div style="font-size:11px; color:var(--text-muted); margin-bottom:4px;">📱 ${o.user.phone} | 📍 ${o.address}</div>
-          <div style="font-size:11px; margin-bottom:6px;">📦 الاصناف: ${o.items.map(i=>`${i.name} (${i.qty})`).join('، ')}</div>
-          <div style="font-size:12px; font-weight:800; color:var(--burgundy); display:flex; justify-content:space-between; align-items:center;">
-            <span>الإجمالي: ${o.total} ر.ق (${o.payment})</span>
-            <select style="font-size:11px; padding:4px; border-radius:6px;" onchange="updateOrderStatus('${o.id}', this.value)">
-              <option value="1" ${o.statusStep===1?'selected':''}>1. استلام الطلب</option>
-              <option value="2" ${o.statusStep===2?'selected':''}>2. جاري التحضير</option>
-              <option value="3" ${o.statusStep===3?'selected':''}>3. في الطريق (توصيل)</option>
-              <option value="4" ${o.statusStep===4?'selected':''}>4. تم التسليم</option>
-            </select>
-          </div>
-        </div>
-      `).join('');
-    }
-
-    function updateOrderStatus(id, stepVal) {
-      stepVal = parseInt(stepVal);
-      const order = orders.find(o => o.id === id);
-      if (order) {
-        order.statusStep = stepVal;
-        if (stepVal === 1) order.statusText = "تم الاستلام ⏳";
-        if (stepVal === 2) order.statusText = "جاري التحضير 👨‍🍳";
-        if (stepVal === 3) order.statusText = "في الطريق 🛵";
-        if (stepVal === 4) order.statusText = "مكتمل ✅";
-        
-        showCustomerTracking(order);
-      }
-      renderOrders();
-    }
-
-    function addNewProduct() {
-      const name = document.getElementById('newProdName').value;
-      const price = parseFloat(document.getElementById('newProdPrice').value);
-      const cat = document.getElementById('newProdCat').value;
-
-      if (!name || !price) return alert("يرجى إدخال كافة بيانات الصنف");
-
-      products.unshift({
-        id: Date.now(),
-        name: name,
-        category: cat,
-        price: price,
-        img: "https://images.pexels.com/photos/1002543/pexels-photo-1002543.jpeg?auto=compress&cs=tinysrgb&w=400"
-      });
-
-      document.getElementById('newProdName').value = '';
-      document.getElementById('newProdPrice').value = '';
-      renderProducts();
-      alert("تمت إضافة المنتج بنجاح إلى واجهة التطبيق!");
-    }
-
-    function switchRole(role) {
-      document.getElementById('btn-cust').classList.toggle('active', role === 'customer');
-      document.getElementById('btn-merch').classList.toggle('active', role === 'merchant');
-      document.getElementById('customer-view').classList.toggle('hidden', role !== 'customer');
-      document.getElementById('merchant-view').classList.toggle('hidden', role !== 'merchant');
-      document.getElementById('searchContainer').style.display = role === 'customer' ? 'block' : 'none';
-      document.getElementById('cartBar').style.display = role === 'customer' ? 'flex' : 'none';
-    }
-  </script>
-</body>
-</html>
+                Navigator.pop(ctx);
+              }
+            },
+            child: const Text('إرسال الطلب 🚀'),
+          )
+        ],
+      ),
+    );
+  }
+}
